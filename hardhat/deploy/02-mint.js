@@ -27,8 +27,21 @@ module.exports = async({getNamedAccounts,deployments})=>{
     console.log(`Seller contract created with address ${sellerContract.address}`)
     const sellerTxt = await sellerContract.createSeller(deployer, "Ins", "INS", {gasLimit : "5000000"});
     // console.log(`Seller created with hash ${sellerTxt.hash}`);
+    let contractAddress = '';
     const sellersWarrantyContractAddress = await sellerContract.getWarrantyContract({gasLimit : "5000000"});
-    const sellerWarrantyContract = await ethers.getContractAt("WarrantyNFT", sellersWarrantyContractAddress,deployer);
+    await new Promise((resolve,reject)=>{
+        setTimeout(resolve, 600000) // 5 minute timeout time
+
+        sellerContract.once('SellerCreated', (e)=>{
+            console.log(sellersWarrantyContractAddress);
+            contractAddress = e;
+            console.log(e, 'Contract');
+            console.log('Seller Created!');
+            resolve();
+        })
+    })
+   
+    const sellerWarrantyContract = await ethers.getContractAt("WarrantyNFT", contractAddress,deployer);
 
 
     //buy deployer
@@ -38,6 +51,14 @@ module.exports = async({getNamedAccounts,deployments})=>{
 
 
     const mintTx = await sellerWarrantyContract.mintWarrantyNFT(deployer,'123',tokenUris[0],tokenUris[1],'12 Dec 2022', {gasLimit : "5000000"});
+    await new Promise((resolve,reject)=>{
+        setTimeout(resolve, 600000) // 5 minute timeout time
+        sellerWarrantyContract.once('NFTMinted', (e)=>{
+            console.log(e, 'NFT Created');
+            console.log('NFT CREATED!!');
+            resolve();
+        })
+    })
     if (developmentChains.includes(network.name)) {
     const txReciept = await mintTx.wait(1);
     const tokenId = await txReciept.events[1].args.tokenId;
@@ -46,6 +67,3 @@ module.exports = async({getNamedAccounts,deployments})=>{
 
 }
 
-const getTokenURIs = ()=>{
-
-}

@@ -21,7 +21,10 @@ contract Seller{
   mapping(address => Library.data) public sellers;
 
 
-    event NFTMinted(uint256 tokenId,address owner);
+
+
+    
+    event SellerCreated(address indexed warrantyContractAddress); 
     
 
     function createSeller(address sellerAddress,string memory NFTName, string memory NFTSymbol) public {
@@ -32,6 +35,7 @@ contract Seller{
             WarrantyNFT newContract =  new WarrantyNFT(sellerAddress, NFTName,NFTSymbol);
             sellers[sellerAddress].WarrantyContract = newContract;
             sellers[sellerAddress].isValue = true;
+            emit SellerCreated(address(newContract));
     }
 
     function getWarrantyContract() public view returns (WarrantyNFT) {

@@ -37,8 +37,9 @@ contract WarrantyNFT is ERC721URIStorage {
             }
         }
         return false;
-    } 
-    
+    }
+
+  
     //mapping of order to customer orders array;
     mapping (address=>uint256[]) private customerToOrders;
 
@@ -57,6 +58,11 @@ contract WarrantyNFT is ERC721URIStorage {
         customerToOrders[msg.sender].push(orderId);
     }
 
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+            return NftTokenToData[tokenId].tokenURI;
+    } 
+    
+
     function mintWarrantyNFT(address customer, uint256 orderId, string memory tokenURI, string memory expireTokenURI, string memory expiryDate) public onlyCustomer  {
         bool isOrderExists = isExistsInArray(customerToOrders[customer], orderId);
         if (!isOrderExists) {
@@ -74,7 +80,7 @@ contract WarrantyNFT is ERC721URIStorage {
         emit NFTMinted(newItemId,customer);
     }
     
-    
+
 
 
     modifier onlyCustomer() {
