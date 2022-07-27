@@ -73,6 +73,8 @@ contract WarrantyNFT is ERC721URIStorage {
         issuedNFT[orderId] = newItemId;
         emit NFTMinted(newItemId,customer);
     }
+    
+    
 
 
     modifier onlyCustomer() {

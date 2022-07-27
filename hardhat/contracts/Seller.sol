@@ -18,16 +18,16 @@ library Library {
 
 contract Seller{
  using Library for Library.data;
-  mapping(address => Library.data) sellers;
+  mapping(address => Library.data) public sellers;
 
 
     event NFTMinted(uint256 tokenId,address owner);
     
 
     function createSeller(address sellerAddress,string memory NFTName, string memory NFTSymbol) public {
-        if (sellers[sellerAddress].isValue) {
-            revert Seller_SellerAlreadyExists();
-        }
+        // if (sellers[sellerAddress].isValue) {
+        //     revert Seller_SellerAlreadyExists();
+        // }
 
             WarrantyNFT newContract =  new WarrantyNFT(sellerAddress, NFTName,NFTSymbol);
             sellers[sellerAddress].WarrantyContract = newContract;
@@ -35,9 +35,9 @@ contract Seller{
     }
 
     function getWarrantyContract() public view returns (WarrantyNFT) {
-        if (!sellers[address(msg.sender)].isValue) {
-            revert Seller_sellerDoesntExists();
-        }
+        // if (!sellers[address(msg.sender)].isValue) {
+        //     revert Seller_sellerDoesntExists();
+        // }
         return sellers[msg.sender].WarrantyContract;
 
     }

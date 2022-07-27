@@ -1,4 +1,6 @@
 const {network} = require('hardhat');
+const { developmentChains } = require('../helper-hardhat-config');
+const { verify } = require('../utils/verify');
 
 module.exports = async function({getNamedAccounts,deployments}) {
     const {deploy,log} = deployments;
@@ -12,6 +14,13 @@ module.exports = async function({getNamedAccounts,deployments}) {
         log : true,
         waitConfirmations : network.config.blockConfirmations || 1
     });
+
+    log("-----------------------------");
+    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+        log('Verifying....');
+        await verify(sellerContract.address,args);  
+    }
+    log("----------------------");
 
 }
 
