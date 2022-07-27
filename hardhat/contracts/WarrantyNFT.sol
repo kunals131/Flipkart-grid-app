@@ -4,7 +4,7 @@ pragma solidity^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 error WarrantyNFT__alreadyExists();
 error WarrantyNFT__orderNotFound();
@@ -12,7 +12,7 @@ error WarrantyNFT__AlreadyIssuedNFT();
 
 
 
-contract WarrantyNFT is ERC721URIStorage, Ownable { 
+contract WarrantyNFT is ERC721URIStorage { 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     struct NftTokenData {
@@ -21,6 +21,9 @@ contract WarrantyNFT is ERC721URIStorage, Ownable {
         string tokenURI;
         string expireTokenURI;
     }
+
+    event NFTMinted(uint256 tokenId,address owner);
+
     //every seller is has a unique minter;
     address private immutable i_sellerId;
     constructor(address sellerId,string memory NFTName, string memory NFTSymbol) ERC721(NFTName,NFTSymbol) {
@@ -46,15 +49,15 @@ contract WarrantyNFT is ERC721URIStorage, Ownable {
     //see if some order already has issed warranty NFT;
     mapping(uint256=>uint256) private issuedNFT;
 
-    function placeOrder(address customer, uint256 orderId) public onlyOwner {
-        bool isOrderExists = isExistsInArray(customerToOrders[customer], orderId);
+    function placeOrder(uint256 orderId) public  {
+        bool isOrderExists = isExistsInArray(customerToOrders[msg.sender], orderId);
         if (isOrderExists) {
             revert WarrantyNFT__alreadyExists();
         }
-        customerToOrders[customer].push(orderId);
+        customerToOrders[msg.sender].push(orderId);
     }
 
-    function mintWarrantyNFT(address customer, uint256 orderId, string memory tokenURI, string memory expireTokenURI, string memory expiryDate) public onlyCustomer returns(uint256) {
+    function mintWarrantyNFT(address customer, uint256 orderId, string memory tokenURI, string memory expireTokenURI, string memory expiryDate) public onlyCustomer  {
         bool isOrderExists = isExistsInArray(customerToOrders[customer], orderId);
         if (!isOrderExists) {
             revert WarrantyNFT__orderNotFound();
@@ -68,7 +71,7 @@ contract WarrantyNFT is ERC721URIStorage, Ownable {
         _setTokenURI(newItemId, tokenURI);
         NftTokenToData[newItemId] = NftTokenData({tokenId : newItemId,expiryDate : expiryDate, tokenURI : tokenURI, expireTokenURI : expireTokenURI});
         issuedNFT[orderId] = newItemId;
-        return newItemId;
+        emit NFTMinted(newItemId,customer);
     }
 
 

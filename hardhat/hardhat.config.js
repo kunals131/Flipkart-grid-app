@@ -62,7 +62,7 @@ module.exports = {
     deployer : {
       default : 0
     },
-    player : {
+    customer : {
       default : 1
     }
   },

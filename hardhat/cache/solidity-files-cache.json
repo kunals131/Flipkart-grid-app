@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "E:\\FlipkartGrid-assets\\app\\hardhat\\contracts\\Seller.sol": {
-      "lastModificationDate": 1658936393734,
-      "contentHash": "d74b7a69e06c245bc8335e1ee694cc52",
+      "lastModificationDate": 1658950869945,
+      "contentHash": "97116e3053921ab6d10d02f2b1727a1b",
       "sourceName": "contracts/Seller.sol",
       "solcConfig": {
         "version": "0.8.8",
@@ -178,8 +178,8 @@
       ]
     },
     "E:\\FlipkartGrid-assets\\app\\hardhat\\contracts\\WarrantyNFT.sol": {
-      "lastModificationDate": 1658936887884,
-      "contentHash": "e3c1885c657acd4807ec816c375ba082",
+      "lastModificationDate": 1658951183248,
+      "contentHash": "e18a8683be352f805c0fa28c091d7984",
       "sourceName": "contracts/WarrantyNFT.sol",
       "solcConfig": {
         "version": "0.8.8",
@@ -215,7 +215,6 @@
         "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         "hardhat/console.sol",
         "@openzeppelin/contracts/utils/Counters.sol",
-        "@openzeppelin/contracts/access/Ownable.sol",
         "@openzeppelin/contracts/utils/Counters.sol"
       ],
       "versionPragmas": [
