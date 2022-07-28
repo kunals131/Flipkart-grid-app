@@ -12,7 +12,7 @@ module.exports = {
         bgPrimary : {
           700 : 'white',
           600 : '#EEF0F3',
-          500 : '#373740'
+          500 : 'white'
         },
         textPrimary : 'black'
       }
