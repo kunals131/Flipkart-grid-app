@@ -10,11 +10,11 @@ module.exports = {
         flipkartYellow : '#FEDA00',
         flipkartBlue : '#2874F0',
         bgPrimary : {
-          700 : '#33333D',
-          600 : '#424250',
+          700 : 'white',
+          600 : '#EEF0F3',
           500 : '#373740'
         },
-        textPrimary : 'white'
+        textPrimary : 'black'
       }
     },
   },

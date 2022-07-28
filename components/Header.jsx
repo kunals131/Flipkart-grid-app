@@ -6,7 +6,7 @@ import { FiSearch } from "react-icons/fi";
 import {MdShoppingCart} from 'react-icons/md';
 const Header = () => {
   return (
-    <div className="py-3 px-32 bg-bgPrimary-700">
+    <div className="py-3 px-32 bg-flipkartBlue">
       <div className="flex items-center justify-between">
         <div className="flex gap-10 items-center">
           <div className="w-[140px]">
@@ -21,7 +21,7 @@ const Header = () => {
               <FiSearch className="text-gray-500" size={20} />
             </div>
           </div>
-          <div className="px-10 py-[6px] rounded-sm font-semibold cursor-pointer bg-bgPrimary-600 text-white">Login</div>
+          <div className="px-10 py-[6px] rounded-sm font-semibold cursor-pointer bg-bgPrimary-600 text-flipkartblue">Login</div>
           <div className="text-white font-[500] cursor-pointer hover:underline">Become a Seller</div>
         </div>
         <div className="flex items-center gap-5 text-white">

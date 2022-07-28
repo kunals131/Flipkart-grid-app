@@ -6,7 +6,7 @@ import {AiFillStar} from 'react-icons/ai';
 const Rating = ()=>{
     return (
         <div className="flex items-center gap-4">
-            <div className="flex px-4 py-[4px] bg-green-600 rounded-xl">
+            <div className="flex px-4 py-[4px] bg-green-600 text-white rounded-xl">
                 <div className="text-xs">4.3</div>
                 <div><AiFillStar/></div>
             </div>
@@ -17,7 +17,7 @@ const Rating = ()=>{
 
 const Product = () => {
   return (
-    <div className="grid grid-cols-[0.2fr_0.8fr] gap-2 items-center w-full py-7 px-2 pr-8 border-b-[1px] border-b-gray-500">
+    <div className="grid grid-cols-[0.2fr_0.8fr] gap-2 items-center w-full py-7 px-2 pr-8 border-b-[1px] border-b-gray-300">
       <div>
         <Image src={ProductImg} />
       </div>
