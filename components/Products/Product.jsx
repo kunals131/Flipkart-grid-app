@@ -41,7 +41,7 @@ const Product = () => {
                 <div className=""><strike>₹72000</strike></div>
                 <div className="text-green-400   font-semibold ">56% Off</div>
             </div>
-            <div className=" mt-7 py-2 cursor-pointer px-8 bg-flipkartBlue w-fit rounded-sm">Add to Cart</div>
+            <div className=" mt-7 py-2 text-white cursor-pointer px-8 bg-flipkartBlue w-fit rounded-sm">Add to Cart</div>
 
         </div>
       </div>
