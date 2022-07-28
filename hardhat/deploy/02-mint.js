@@ -54,7 +54,7 @@ module.exports = async({getNamedAccounts,deployments})=>{
     console.log(`Customer bought with order Id ${123}`);
 
 
-    const mintTx = await sellerWarrantyContract.mintWarrantyNFT(deployer,'123',tokenUris[0],tokenUris[1],'400', {gasLimit : "5000000"});
+    const mintTx = await sellerWarrantyContract.mintWarrantyNFT(deployer,'123',tokenUris[0],tokenUris[1],'300', {gasLimit : "5000000"});
     await new Promise((resolve,reject)=>{
         setTimeout(resolve, 600000) // 5 minute timeout time
         sellerWarrantyContract.once('NFTMinted', (e)=>{

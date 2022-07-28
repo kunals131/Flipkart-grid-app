@@ -1,8 +1,10 @@
 //SPDX-License-Identifier: MIT
 
+
+
 pragma solidity ^0.8.0;
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 // import "@openzeppelin/contracts/access/Ownable.sol";
@@ -12,7 +14,7 @@ error WarrantyNFT__orderNotFound();
 error WarrantyNFT__AlreadyIssuedNFT();
 error WarrantyNFT__UpkeepNotNeeded();
 
-contract WarrantyNFT is ERC721URIStorage, KeeperCompatibleInterface {
+contract WarrantyNFT is ERC721 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     struct NftTokenData {
@@ -56,6 +58,9 @@ contract WarrantyNFT is ERC721URIStorage, KeeperCompatibleInterface {
     //mapping for NFT Data;
     mapping(uint256 => NftTokenData) public NftTokenToData;
 
+    //customerAddressToNFTTokens;
+    mapping(address=>uint256[]) CustomerAddressToTokens;
+
     //see if some order already has issed warranty NFT;
     mapping(uint256 => uint256) private issuedNFT;
 
@@ -70,20 +75,21 @@ contract WarrantyNFT is ERC721URIStorage, KeeperCompatibleInterface {
         customerToOrders[msg.sender].push(orderId);
     }
 
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (string memory)
-    {
-        return NftTokenToData[tokenId].tokenURI;
-    }
+   function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        NftTokenData memory currentData = NftTokenToData[tokenId];
+        bool timePassed = ((block.timestamp - currentData.timeStamp) > currentData.expiry);
+        if (timePassed) {
+            return currentData.expireTokenURI;
+        }
+        else {
+            return currentData.tokenURI;
+        }
+   }
 
     function mintWarrantyNFT(
         address customer,
         uint256 orderId,
-        string memory tokenURI,
+        string memory activeTokenURI,
         string memory expireTokenURI,
         uint256 expiry
     ) public onlyCustomer {
@@ -99,80 +105,30 @@ contract WarrantyNFT is ERC721URIStorage, KeeperCompatibleInterface {
         }
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        _mint(customer, newItemId);
-        _setTokenURI(newItemId, tokenURI);
+        _safeMint(customer, newItemId);
         NftTokenToData[newItemId] = NftTokenData({
             tokenId: newItemId,
             expiry: expiry,
-            tokenURI: tokenURI,
+            tokenURI: activeTokenURI,
             expireTokenURI: expireTokenURI,
             timeStamp: block.timestamp,
             expired: false
         });
         issuedNFT[orderId] = newItemId;
+        CustomerAddressToTokens[customer].push(newItemId);
         emit NFTMinted(newItemId, customer);
     }
 
-   function checkUpkeep(
-        bytes memory /* checkData */
-    )
-        public
-        view
-        override
-        returns (
-            bool upkeepNeeded,
-            bytes memory /* performData */
-        )
-    {
-        uint256 currentId = 1;
-         NftTokenData memory currentData = NftTokenToData[currentId];
-        // for (uint256 i = 1; i < currentId; ++i) {
-        //     NftTokenData memory currentData = NftTokenToData[i];
-        //     if (currentData.expired) {
-        //         bool timePassed = ((block.timestamp - currentData.timeStamp) >
-        //             currentData.expiry);
-        //         if (timePassed) {
-        //             return (upkeepNeeded, "0x0");
-        //         }
-        //     }
-        // }
-        // return (false, "0x0");
-          bool timePassed = ((block.timestamp - currentData.timeStamp) > currentData.expiry);
-            if (timePassed) {
-                    return (true, "0x0");
-            }
-            return (false, "0x0");
-        
-
-        // We don't use the checkData in this example. The checkData is defined when the Upkeep was registered.
+    function getCustomersTokens() public view returns(string[] memory){
+        uint256[] memory customerNFTTokens = CustomerAddressToTokens[msg.sender];
+        string[] memory tokenURIs = new string[](customerNFTTokens.length);
+        for(uint256 i=0; i<customerNFTTokens.length; ++i) {
+            tokenURIs[i] = tokenURI(customerNFTTokens[i]);
+        }
+        return tokenURIs;
     }
 
-     function performUpkeep(bytes calldata /*performData*/) external override {
-        (bool upkeepNeeded,) = checkUpkeep("");
-        if (!upkeepNeeded) {
-            revert WarrantyNFT__UpkeepNotNeeded();
-        }
-        // uint256 currentId = _tokenIds.current();
-        // for (uint256 i = 1; i < currentId; ++i) {
-        //     NftTokenData memory currentData = NftTokenToData[i];
-        //     if (currentData.expired) {
-        //         bool timePassed = ((block.timestamp - currentData.timeStamp) >
-        //             currentData.expiry);
-        //         if (timePassed) {
-        //            _setTokenURI(i, currentData.expireTokenURI);
-        //         }
-        //     }
-           
-        // }
-         NftTokenData memory currentData = NftTokenToData[1];
-            if (!currentData.expired) {
-                bool timePassed = ((block.timestamp - currentData.timeStamp) > currentData.expiry);
-                if (timePassed) {
-                   _setTokenURI(1, currentData.expireTokenURI);
-                   NftTokenToData[1].expired = true;
-                }
-            }
-     }
+   
 
     modifier onlyCustomer() {
         require(
