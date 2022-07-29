@@ -17,7 +17,7 @@ export const setAuthDetails = (data)=>{
 
 export const loginUser = (formData)=> async (dispatch,getState)=>{
     try {
-        const userData = loginUserAPI(formData);
+        const userData = await loginUserAPI(formData);
         console.log(userData);
     }catch(err) {
         console.log(err);
