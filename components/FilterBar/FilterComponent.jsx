@@ -17,7 +17,7 @@ const FilterComponent = () => {
             </div>
         </div>
         <div className='mt-5 space-y-3'>
-              {filterItems.map(f=><FilterItem title={f}/>)}
+              {filterItems.map((f,idx)=><FilterItem key={idx} title={f}/>)}
         </div>
     </div>
   )

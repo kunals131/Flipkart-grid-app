@@ -5,6 +5,8 @@ import Image from 'next/image'
 import {FiUnlock} from 'react-icons/fi';
 import InputField from '../components/InputField';
 import SelectInput from '../components/SelectRole';
+import { useDispatch } from 'react-redux';
+import { loginUser, signUpUser } from '../store/auth/actions';
 const Auth = () => {
     const [isLogin,setIsLogin] = useState(true);
     const [form,setForm] = useState({
@@ -16,8 +18,20 @@ const Auth = () => {
         role : 'customer',
         phoneNumber : '',
     })
+    const [error,setError] = useState('');
+    const dispatch = useDispatch();
     const handleChange = (e)=>{
         setForm(prev=>({...prev,[e.target.name] : e.target.value}));
+    }
+    const handleSubmit = ()=>{
+        console.log(form);
+        if(isLogin) {
+            dispatch(loginUser({email : form.email,password : form.password}));
+        }
+        else {
+            dispatch(signUpUser(form));
+        }
+
     }
   return (
     <div className='w-full h-[100vh]  px-12 flex items-center'>
@@ -37,14 +51,14 @@ const Auth = () => {
             {!isLogin&&form.role==='seller'&& <InputField value={form.businessName} onChange={handleChange} name='businessName' label={'Business Name'} placeholder='Business Name'/>}
             </div>
            <div className='flex items-center gap-2'>
-           <InputField onChange={handleChange} value={form.email} name='password' label={'Password'} placeholder='Enter your Password'/>
+           <InputField onChange={handleChange} value={form.password} type="password" name='password' label={'Password'} placeholder='Enter your Password'/>
            {!isLogin&&<InputField onChange={handleChange} value={form.confirmPassword} name='confirmPassword' label={'Confirm Password'} placeholder='Enter your Password'/>}
 
             </div>
 
 
             <div className='pt-2 cursor-pointer'>
-            <div  className='bg-white w-fit px-8 py-2 rounded-md'>{isLogin?'Login':'Sign Up'}</div>
+            <div  className='bg-white w-fit px-8 py-2 rounded-md' onClick={handleSubmit}>{isLogin?'Login':'Sign Up'}</div>
             </div>
         </form>
         <div className='mt-7 text-textPrimary'>Don't have a account? <span className='ml-1 font-semibold cursor-pointer' onClick={()=>setIsLogin(prev=>!prev)}>{isLogin?'Sign Up':'Login'}</span></div>

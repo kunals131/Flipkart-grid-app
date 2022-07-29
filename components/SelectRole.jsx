@@ -14,7 +14,7 @@ const SelectInput = ({
         <label
           htmlFor={name}
           className={`block text-sm font-semibold ${
-            isFocus ? "text-white dark:text-darkPrimary" : "text-gray-400 dark:text-gray-500"
+            isFocus ? "text-black dark:text-darkPrimary" : "text-gray-400 dark:text-gray-500"
           }`}
         >
           {label}
