@@ -24,7 +24,7 @@ const InputField = ({
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           type={type || "text"}
-          className="mt-2  h-[40px] bg-bgPrimary-600 placeholder:text-gray-600  w-full text-textPrimary  text-sm p-2 rounded-md outline-none"
+          className="mt-2  h-[40px] bg-bgPrimary-500 placeholder:text-gray-600  w-full text-textPrimary  text-sm p-2 rounded-md outline-none"
           placeholder={placeholder}
           name={name}
           id={name}
