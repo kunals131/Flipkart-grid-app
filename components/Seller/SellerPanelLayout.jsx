@@ -33,7 +33,7 @@ const SellerPanelLayout = ({children}) => {
                 <SideBarIcon icon={<VscWorkspaceTrusted size="21" />} link="/" text="Verification Center"/>
             </div>
             <div className='h-full flex items-end'>
-            <SideBarIcon icon={<CgLogOut size={23} />} text="Go Back"/>
+            <SideBarIcon icon={<CgLogOut size={23} />} link='/' text="Go Back"/>
             </div>
         </div>
         <div className='bg-bgPrimary-600'>
