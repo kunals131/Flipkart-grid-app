@@ -54,6 +54,16 @@ const OrderItem = ({details}) => {
 const Cart = ({user,cart}) => {
   console.log(user,cart);
 
+  const [form,setForm] = useState({
+    customerAddress : "",
+    houseNumber : "",
+    city : "",
+    pincode : "",
+    country : "",
+    state : "",
+    couponCode : "",
+});
+
   const [step,setStep] = useState(0);
   const dispatch = useDispatch();
   const {loading,items,total} = useSelector(state=>state.cart)
@@ -76,8 +86,8 @@ const Cart = ({user,cart}) => {
     </div>: 
     step===2?<OrderPlaced/>:<div className='grid grid-cols-[3fr_1.6fr] gap-16 p-8 px-28'>
       <div>
-        {step==0&&<Shipping step={step} setStep={setStep}/>}
-        {step==1&&<Payment step={step} setStep={setStep}/>}
+        {step==0&&<Shipping form={form} setForm={setForm} step={step} setStep={setStep}/>}
+        {step==1&&<Payment step={step} form={form} setForm={setForm} setStep={setStep}/>}
       </div>
         <div>
             <div className='flex justify-between items-center'>

@@ -20,10 +20,18 @@ const ShippingType = ({value,shippingMethod,setShippingMethod,type,duration,pric
 }
 
 
-const Shipping = ({step,setStep}) => {
+const Shipping = ({step,setStep,form,setForm}) => {
     const [shippingMethod,setShippingMethod] = useState('');
+    
+    const handleChange = (e)=>{
+        setForm((prev)=>({...prev,[e.target.name] : e.target.value}));
+    }
+    const handleSubmit = (e)=>{
+        e.preventDefault();
+        
+    }
   return (
-    <div className='w-full'>
+    <form className='w-full' onSubmit={handleSubmit}>
     <div className='flex gap-5'></div>
     <div className='font-[500] text-xl'>Shipping Method</div>
     <div className='mt-5 grid grid-cols-2 w-full items-center'>
@@ -33,23 +41,23 @@ const Shipping = ({step,setStep}) => {
     <div className='mt-10'>
     <div className='font-[500] text-xl'>Shipping Address</div>
     <div className='mt-5 w-full flex flex-col gap-5'>
-        <Input label="Street Address"/>
-        <Input label="Apt/Suit no."/>
+        <Input onChange={handleChange} name="customerAddress" value={form.customerAddress} required={true} label="Street Address"/>
+        <Input onChange={handleChange} name="houseNumber" value={form.houseNumber} required={true} label="Apt/Suit no."/>
         <div className='grid grid-cols-2 gap-5'>
-            <Input label='Country'/>
-            <Input label='City'/>
+            <Input onChange={handleChange} name="country" value={form.country} required={true} label='Country'/>
+            <Input onChange={handleChange} name="city" value={form.city} required={true} label='City'/>
         </div>
         <div className='grid grid-cols-2 gap-5'>
-            <Input label='Zip Code'/>
-            <Input label='State'/>
+            <Input onChange={handleChange} name="pincode" value={form.pincode } required={true} label='Zip Code'/>
+            <Input onChange={handleChange} name="state" value={form.state} required={true} label='State'/>
         </div>
     </div>
     </div>
     <div className='mt-7 flex items-center justify-between'>
         <div className='text-gray-500 cursor-pointer hover:text-gray-800 transition-all'>Keep Shopping</div>
-        <div className='w-fit cursor-pointer px-6 py-3 font-[500] rounded-sm hover:bg-[#1f70d3] bg-flipkartBlue text-white' onClick={()=>setStep(1)}>Continue to Payment</div>
+        <button className='w-fit cursor-pointer px-6 py-3 font-[500] rounded-sm hover:bg-[#1f70d3] bg-flipkartBlue text-white' type="submit">Continue to Payment</button>
     </div>
-</div>
+</form>
   )
 }
 
