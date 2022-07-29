@@ -50,7 +50,7 @@ const OrderItem = ({details})=>{
             </div>
             <div className='flex flex-col'>
               <div>Delivered To</div>
-              <div className='font-semibold'>{details.customer.username}</div>
+              <div className='font-semibold'>{details?.customer?.username}</div>
             </div>
           </div>
           <div className='flex flex-col text-xs'>
@@ -83,12 +83,7 @@ const OrderItem = ({details})=>{
 }
 
 const Orders = ({orders,user}) => {
-  console.log(orders);
-  const dispatch = useDispatch();
-  const {orders : stateOrders} = useSelector(state=>state.orders);
-  useEffect(()=>{
-    dispatch(setAllOrders(orders));
-  }, []);
+
   return (
     <AccountLayout>
      <div className='p-3 font-poppins lg:p-4'>
@@ -109,7 +104,7 @@ const Orders = ({orders,user}) => {
         </div>
         <hr className='lg:hidden'/>
         <div className='mt-6 space-y-3 lg:space-y-6'>
-          {stateOrders.map(o=><OrderItem details={o}/>)}
+          {orders.map(o=><OrderItem details={o}/>)}
         </div>
       </div>
     </AccountLayout>

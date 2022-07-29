@@ -22,3 +22,4 @@ export const updateOrderStatusAPI = async(id,status,token)=>{
     const result = await serverInstance.post(`/order/${id}`, {status});
     return result;
 }
+
