@@ -7,10 +7,12 @@ import { useSelector } from "react-redux";
 import {MdShoppingCart} from 'react-icons/md';
 import {useDispatch} from 'react-redux';
 import { fetchAllCartItems } from "../store/cart/actions";
+import {useRouter} from 'next/router';
 const Header = () => {
   const {isLoggedin,user} = useSelector(state=>state.auth);
   const {items,loading} = useSelector(state=>state.cart);
   const dispatch = useDispatch();
+  const router = useRouter();
   useEffect(()=>{
     if (isLoggedin) {
       console.log('fetching cart..')
@@ -40,7 +42,7 @@ const Header = () => {
         </div>
         <div className="flex items-center gap-5 text-white">
           
-          <div className="flex items-center gap-1 cursor-pointer">
+          <div onClick={()=>router.push('/cart')} className="flex items-center gap-1 cursor-pointer">
             <div className="relative"><MdShoppingCart size={25}/><div className="text-xs absolute bg-flipkartYellow rounded-full text-black w-[15px] h-[15px] flex items-center justify-center -top-1 -right-1">{items?.length || 0}</div></div>
             <div className="font-[500]">Cart</div>
             </div>
