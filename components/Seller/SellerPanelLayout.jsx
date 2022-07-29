@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import WhiteIcon from '../../public/assets/icon.svg';
 import Image from 'next/image'
@@ -11,9 +11,17 @@ import {BsFillBellFill } from 'react-icons/bs';
 import SideBarIcon from './SidebarIcon';
 import { useRouter } from 'next/router';
 import {GoPackage} from 'react-icons/go';   
+import {useSelector, useDispatch} from 'react-redux'
+import { checkAuth } from '../../store/auth/actions';
 
 const SellerPanelLayout = ({children}) => {
  const router = useRouter();
+ const {user} = useSelector(state=>state.auth);
+ const dispatch = useDispatch();
+ console.log(user)
+ useEffect(()=>{
+    dispatch(checkAuth())
+ }, [])
   return (
 <div className='grid grid-cols-[0.05fr_0.95fr] h-[100vh] w-full '>
         <div className='h-full flex flex-col items-center py-4 w-full bg-flipkartBlue'>
@@ -31,7 +39,7 @@ const SellerPanelLayout = ({children}) => {
         <div className='bg-bgPrimary-600'>
             <div className='w-full flex justify-between items-center px-12  bg-white py-4 shadow-sm'>
                 <div className='flex items-center gap-2'>
-                    <div className='text-xl font-semibold'>Sharda Electronics</div>
+                    <div className='text-xl font-semibold'>{user.businessName}</div>
                     <div className='text-[0.6rem]   px-1 py-[3px] border-[1px] border-red-600 rounded-md text-red-600'>🔴 Not Verified</div>
                 </div>
                 <div className='flex items-center gap-10'>
@@ -39,7 +47,7 @@ const SellerPanelLayout = ({children}) => {
                     <div className='flex items-center gap-2'>
                         <div className='w-[40px] h-[40px] bg-flipkartYellow rounded-full'></div>
                         <div className='text-xs'>
-                            <div className='font-[500] text-sm'>Kunal Sangtiani</div>
+                            <div className='font-[500] text-sm'>{user.username}</div>
                             <div className='text-blue-500'>Admin</div>
                         </div>
                     </div>
