@@ -1,4 +1,4 @@
-import { placeOrderAPI } from "../../APIs/order";
+import { fetchAllOrderAPI, placeOrderAPI } from "../../APIs/order";
 import { setCart } from "../cart/actions";
 import { actionTypes } from "./constants";
 
@@ -43,6 +43,18 @@ export const placeOrder = (form, setStep)=>async(dispatch,getState)=>{
     }catch(err) {
         console.log(err);
     }finally {
+        dispatch(setOrderLoading(false));
+    }
+}
+
+export const fetchAllOrders = ()=>async(dispatch,getState)=>{
+    try{
+        dispatch(setOrderLoading(true));
+        const result = await fetchAllOrderAPI();
+       dispatch( setAllOrders(result.data.orders));
+    }catch(err) {
+        console.log(err);
+    } finally{
         dispatch(setOrderLoading(false));
     }
 }
