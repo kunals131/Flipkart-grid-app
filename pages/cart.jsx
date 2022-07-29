@@ -4,6 +4,7 @@ import {RiCheckboxCircleFill} from 'react-icons/ri';
 import Input from '../components/Input';
 import Shipping from '../components/Cart/Shipping';
 import Payment from '../components/Cart/Payment';
+import OrderPlaced from '../components/Cart/OrderPlaced';
 
 const OrderItem = () => {
     return (
@@ -21,13 +22,16 @@ const OrderItem = () => {
   };
 
 const Cart = () => {
+
+  const [step,setStep] = useState(0);
     
   return (
     <>
     <Header/>
-    <div className='grid grid-cols-[3fr_1.6fr] gap-16 p-8 px-28'>
+    {step===2?<OrderPlaced/>:<div className='grid grid-cols-[3fr_1.6fr] gap-16 p-8 px-28'>
       <div>
-        <Payment/>
+        {step==0&&<Shipping step={step} setStep={setStep}/>}
+        {step==1&&<Payment step={step} setStep={setStep}/>}
       </div>
         <div>
             <div className='flex justify-between items-center'>
@@ -53,7 +57,7 @@ const Cart = () => {
               </div>
             </div>
         </div>
-    </div>
+    </div>}
     </>
   )
 }

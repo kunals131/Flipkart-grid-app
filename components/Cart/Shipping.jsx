@@ -20,7 +20,7 @@ const ShippingType = ({value,shippingMethod,setShippingMethod,type,duration,pric
 }
 
 
-const Shipping = () => {
+const Shipping = ({step,setStep}) => {
     const [shippingMethod,setShippingMethod] = useState('');
   return (
     <div className='w-full'>
@@ -47,7 +47,7 @@ const Shipping = () => {
     </div>
     <div className='mt-7 flex items-center justify-between'>
         <div className='text-gray-500 cursor-pointer hover:text-gray-800 transition-all'>Keep Shopping</div>
-        <div className='w-fit cursor-pointer px-6 py-3 font-[500] rounded-sm hover:bg-[#1f70d3] bg-flipkartBlue text-white'>Continue to Payment</div>
+        <div className='w-fit cursor-pointer px-6 py-3 font-[500] rounded-sm hover:bg-[#1f70d3] bg-flipkartBlue text-white' onClick={()=>setStep(1)}>Continue to Payment</div>
     </div>
 </div>
   )
