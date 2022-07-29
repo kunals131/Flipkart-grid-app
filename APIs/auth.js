@@ -2,6 +2,7 @@ import { createServerInstance } from "../utils/serverInstance";
 
 
 export const loginUserAPI = async(data)=>{
+    const serverInstance = createServerInstance('');
 
     const result = await serverInstance.post('/auth/login', data);
     return result;

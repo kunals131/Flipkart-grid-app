@@ -8,6 +8,7 @@ import {MdShoppingCart} from 'react-icons/md';
 import {useDispatch} from 'react-redux';
 import { fetchAllCartItems } from "../store/cart/actions";
 import {useRouter} from 'next/router';
+import { checkAuth } from "../store/auth/actions";
 const Header = () => {
   const {isLoggedin,user} = useSelector(state=>state.auth);
   const {items,loading} = useSelector(state=>state.cart);
@@ -18,8 +19,13 @@ const Header = () => {
       console.log('fetching cart..')
     dispatch(fetchAllCartItems()); 
     }
+    
     console.log(isLoggedin);
   }, [isLoggedin])
+
+  useEffect(()=>{
+    dispatch(checkAuth());
+  }, [])
   return (
     <div className="py-3 px-32 bg-flipkartBlue">
       <div className="flex items-center justify-between">
@@ -36,7 +42,7 @@ const Header = () => {
               <FiSearch className="text-gray-500" size={20} />
             </div>
           </div>
-          {!isLoggedin&&<div className="px-10 py-[6px] rounded-sm font-semibold cursor-pointer bg-bgPrimary-600 text-flipkartBlue">Login</div>}
+          {!isLoggedin&&<div className="px-10 py-[6px] rounded-sm font-semibold cursor-pointer bg-bgPrimary-600 text-flipkartBlue" onClick={()=>router.push('/auth')}>Login</div>}
           {isLoggedin&&<div className="text-white">{user?.email || 'email'}</div>}
           <div className="text-white font-[500] cursor-pointer hover:underline">Become a Seller</div>
         </div>

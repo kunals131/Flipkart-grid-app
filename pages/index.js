@@ -15,7 +15,7 @@ export const getServerSideProps = async(ctx) => {
   return {
     props : {
       products : products.data.products,
-      user : auth.state?auth.decodedData.user:undefined
+      user : auth.state?auth.decodedData.user:{}
     }
   }
   }catch(err) {

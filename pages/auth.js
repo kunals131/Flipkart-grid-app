@@ -10,7 +10,7 @@ import { loginUser, signUpUser } from '../store/auth/actions';
 import {useRouter} from 'next/router';
 import { checkAuthAPI } from '../APIs/auth';
 import { verifyAuthentication } from '../utils/verifyAuth';
-
+import {useSelector} from 'react-redux';
 
 
 export const getServerSideProps = (ctx) => {
@@ -29,6 +29,7 @@ export const getServerSideProps = (ctx) => {
 
 const Auth = ({props}) => {
     const [isLogin,setIsLogin] = useState(true);
+    const {loading} = useSelector(state=>state.auth);
     const [form,setForm] = useState({
         username : '',
         email : '',
@@ -44,7 +45,8 @@ const Auth = ({props}) => {
     const handleChange = (e)=>{
         setForm(prev=>({...prev,[e.target.name] : e.target.value}));
     }
-    const handleSubmit = ()=>{
+    const handleSubmit = (e)=>{
+      e.preventDefault();
         console.log(form);
         if(isLogin) {
             dispatch(loginUser({email : form.email,password : form.password}, router));
@@ -58,7 +60,7 @@ const Auth = ({props}) => {
     <div className='w-full h-[100vh]  px-12 flex items-center'>
         <div>
         <div className='text-3xl flex items-center gap-4 font-[500] text-textPrimary'>
-        <FiUnlock size={36} className='text-flipkartYellow' />
+        <FiUnlock size={36} className='text-flipkartBlue' />
         <div>{isLogin?'Login':'Sign Up'}</div>
         </div>
         <div className='mt-3 text-gray-400'>Get your orders, Reccomendations & wishlist items</div>
@@ -79,7 +81,7 @@ const Auth = ({props}) => {
 
 
             <div className='pt-2 cursor-pointer'>
-            <div  className='bg-white w-fit px-8 py-2 rounded-md' onClick={handleSubmit}>{isLogin?'Login':'Sign Up'}</div>
+            <button disabled={loading}  className='bg-white w-fit px-8 disabled:opacity-75 py-2 rounded-md' onClick={handleSubmit}>{loading?'Loading..':isLogin?'Login':'Sign Up'}</button>
             </div>
         </form>
         <div className='mt-7 text-textPrimary'>Don't have a account? <span className='ml-1 font-semibold cursor-pointer' onClick={()=>setIsLogin(prev=>!prev)}>{isLogin?'Sign Up':'Login'}</span></div>

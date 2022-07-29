@@ -1,4 +1,4 @@
-import { loginUserAPI, logoutUserAPI, signUpUserAPI } from "../../APIs/auth"
+import { checkAuthAPI, loginUserAPI, logoutUserAPI, signUpUserAPI } from "../../APIs/auth"
 import { actionTypes } from "./constants"
 
 export const setAuthLoading = (state)=>{
@@ -17,7 +17,7 @@ export const setAuthDetails = (data)=>{
 
 export const loginUser = (formData,router)=> async (dispatch,getState)=>{
     try {
-        setAuthLoading(true);
+        dispatch(setAuthLoading(true));
         const userData = await loginUserAPI(formData);
         console.log(userData);
         router.push('/');
@@ -25,21 +25,20 @@ export const loginUser = (formData,router)=> async (dispatch,getState)=>{
     }catch(err) {
         console.log(err);
     } finally {
-        setAuthLoading(false);
+        dispatch(setAuthLoading(false));
     }
 }
 
 export const logoutUser = (router)=>async(dispatch,getState)=>{
     try {
-        setAuthLoading(true);
+        dispatch(setAuthLoading(true));
         const result = await logoutUserAPI();
         setAuthDetails({user : {}, isLoggedin : false});
-        if (router.pathname!=='/' && router.pathname!=='/auth') return router.push('/auth');
+        if (router.pathname!=='/' && router.pathname!=='/auth') router.push('/auth');
     }catch(err) {
         console.log(err);
     } finally {
-        setAuthLoading(false);
-         
+        dispatch(setAuthLoading(false));
     }
 }
 
@@ -48,12 +47,22 @@ export const logoutUser = (router)=>async(dispatch,getState)=>{
 
 export const signUpUser = (formData)=>async(dispatch,getState)=>{
     try {
-        setAuthLoading(true);
+        dispatch(setAuthLoading(true));
         const result = await signUpUserAPI(formData);
         console.log(result);
     }catch(err) {
         console.log(err);
     } finally {
-        setAuthLoading(false);
+        dispatch(setAuthLoading(false));
+    }
+}
+
+export const checkAuth = (formData)=>async(dispatch,getState)=>{
+    try {
+        const result = await checkAuthAPI();
+        dispatch(setAuthDetails({isLoggedin : true,user : result.data.user}));
+    }catch(err) {
+        dispatch(setAuthDetails({isLoggedin : false}));
+    }finally {
     }
 }
