@@ -4,7 +4,7 @@ pragma solidity^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./WarrantyTest.sol";
+import "./WarrantyNFT.sol";
 
 error Seller_SellerAlreadyExists();
 error Seller_sellerDoesntExists();
