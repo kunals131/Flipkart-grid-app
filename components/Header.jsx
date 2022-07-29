@@ -24,7 +24,7 @@ const Header = () => {
     <div className="py-3 px-32 bg-flipkartBlue">
       <div className="flex items-center justify-between">
         <div className="flex gap-10 items-center">
-          <div className="w-[140px]">
+          <div onClick={()=>router.push('/')} className="w-[140px] cursor-pointer">
             <Image src={WhiteLogo} alt="Logo" />
           </div>
           <div className="w-[400px] ml-8 relative flex items-center justify-center">

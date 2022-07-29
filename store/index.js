@@ -5,13 +5,15 @@ import thunk from "redux-thunk";
 import authReducer from "./auth/reducers";
 import logger from 'redux-logger'
 import cartReducer from "./cart/reducer";
+import orderReducer from "./order/reducer";
 
 
 // Reducers imported
 
 const rootReducer = combineReducers({
     auth : authReducer,
-    cart : cartReducer
+    cart : cartReducer,
+    orders : orderReducer
 });
 
 export default createStore(rootReducer, applyMiddleware(thunk,logger));

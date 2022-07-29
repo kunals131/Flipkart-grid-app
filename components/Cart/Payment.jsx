@@ -1,9 +1,15 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
+import { placeOrder } from '../../store/order/actions';
 import Input from '../Input'
 
 const Payment = ({step,setStep,form,setForm}) => {
   const handleChange = (e)=>{
     setForm((prev)=>({...prev,[e.target.name] : e.target.value}));
+}
+const dispatch = useDispatch();
+const handlePlaceOrder = ()=>{
+  dispatch(placeOrder(form,setStep));
 }
   return (
     <div>
@@ -13,7 +19,7 @@ const Payment = ({step,setStep,form,setForm}) => {
         <div className='border-[2px] text-flipkartBlue border-flipkartBlue cursor-pointer py-2 flex items-center justify-center font-[500] rounded-md w-full text-center'>Apply</div>
        </div>
        <div className='mt-12'>
-        <div className='px-5 py-2 bg-flipkartBlue w-fit  text-white  cursor-pointer rounded-md' onClick={()=>setStep(2)}>Place Order</div>
+        <div  className='px-5 py-2 bg-flipkartBlue w-fit  text-white  cursor-pointer rounded-md' onClick={handlePlaceOrder}>Place Order</div>
        </div>
     </div>
   )

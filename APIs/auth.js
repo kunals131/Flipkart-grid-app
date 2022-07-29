@@ -24,3 +24,4 @@ export const logoutUserAPI = async()=>{
     const result = await serverInstance('/auth/logout');
     return result;
 }
+

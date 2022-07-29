@@ -28,6 +28,7 @@ const Shipping = ({step,setStep,form,setForm}) => {
     }
     const handleSubmit = (e)=>{
         e.preventDefault();
+        setStep(1);
         
     }
   return (
