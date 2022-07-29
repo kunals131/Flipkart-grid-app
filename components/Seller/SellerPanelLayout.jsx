@@ -10,6 +10,7 @@ import {CgLogOut} from 'react-icons/cg';
 import {BsFillBellFill } from 'react-icons/bs';
 import SideBarIcon from './SidebarIcon';
 import { useRouter } from 'next/router';
+import {GoPackage} from 'react-icons/go';   
 
 const SellerPanelLayout = ({children}) => {
  const router = useRouter();
@@ -19,7 +20,7 @@ const SellerPanelLayout = ({children}) => {
             <div className='w-[50px]'><Image src={WhiteIcon}/></div>
             <div className='mt-8 space-y-5'>
                 <SideBarIcon icon={<MdHome size="23" />} link={`/seller/${router.query.id}`} text="Home"/>
-                <SideBarIcon icon={<MdHome size="23" />} link={`/seller/${router.query.id}/inventory`} text="Inventory"/>
+                <SideBarIcon icon={<GoPackage size="23" />} link={`/seller/${router.query.id}/inventory`} text="Inventory"/>
                 <SideBarIcon icon={<BsPeopleFill size="21" />} link="/" text="All Customers"/>
                 <SideBarIcon icon={<VscWorkspaceTrusted size="21" />} link="/" text="Verification Center"/>
             </div>
