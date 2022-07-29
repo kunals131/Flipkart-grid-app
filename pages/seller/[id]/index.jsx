@@ -1,17 +1,8 @@
 import React, { useState } from 'react'
 import SellerPanelLayout from '../../../components/Seller/SellerPanelLayout'
-import {FiSearch} from 'react-icons/fi'
 import OrderDrawer from '../../../components/Seller/OrderDrawer'
-const SearchBar = ()=>{
-    return (
-        <div className='flex items-center relative w-[50%]'>
-            <div className='absolute left-2 text-gray-500'>
-            <FiSearch/>
-            </div>
-            <input type='text' placeholder='Search Order' className='w-full pl-9 outline-none bg-bgPrimary-600 py-2 rounded-md'/>
-        </div>
-    )
-}
+import SearchBar from '../../../components/SearchBar'
+
 
 const OrderItem = ()=>{
     const [isOpen,setIsOpen] = useState(false);
@@ -44,6 +35,7 @@ const SellerPanel = () => {
         <div className='w-full h-full'>
             <div className='py-5'>
                 <div className='px-6 w-full'>
+                    <div className='mb-5 text-xl font-[500]'>Orders</div>
                 <SearchBar/>
                 </div>
                 <div className='mt-7'>

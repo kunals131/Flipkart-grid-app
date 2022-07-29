@@ -10,7 +10,7 @@ const InputField = ({
   }) => {
     const [isFocus, setIsFocus] = useState(false);
     return (
-      <div className="flex-1 shrink-0">
+      <div className="flex-1 shrink-0 w-full">
         <label
           htmlFor={name}
           className={`block text-sm font-semibold ${
@@ -24,7 +24,7 @@ const InputField = ({
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           type={type || "text"}
-          className="mt-2  h-[40px] bg-bgPrimary-600 placeholder:text-gray-600  w-full text-textPrimary  text-sm p-2 rounded-md outline-none"
+          className="mt-1 h-[30px] bg-transparent border-b-[1px] border-gray-400 focus:border-black  placeholder:text-gray-600  w-full text-textPrimary  text-sm p-2 rounded-sm outline-none"
           placeholder={placeholder}
           name={name}
           id={name}
