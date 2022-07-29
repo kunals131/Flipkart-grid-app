@@ -26,6 +26,8 @@ export const loginUser = (formData,router)=> async (dispatch,getState)=>{
     }
 }
 
+export const setUserData = (formData,router)=>async (dispatch,getState)
+
 export const signUpUser = (formData)=>async(dispatch,getState)=>{
     try {
         const result = await signUpUserAPI(formData);
