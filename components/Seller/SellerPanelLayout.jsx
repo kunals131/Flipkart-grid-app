@@ -17,6 +17,7 @@ const SellerPanelLayout = ({children}) => {
             <div className='w-[50px]'><Image src={WhiteIcon}/></div>
             <div className='mt-8 space-y-5'>
                 <SideBarIcon icon={<MdHome size="23" />} link="/" text="Home"/>
+                <SideBarIcon icon={<MdHome size="23" />} link="/seller/2/inventory" text="Inventory"/>
                 <SideBarIcon icon={<BsPeopleFill size="21" />} link="/" text="All Customers"/>
                 <SideBarIcon icon={<VscWorkspaceTrusted size="21" />} link="/" text="Verification Center"/>
             </div>

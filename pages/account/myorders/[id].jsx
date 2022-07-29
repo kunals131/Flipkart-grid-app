@@ -3,44 +3,52 @@ import AccountLayout from "../../../components/AccountLayout";
 import { BsCheck2 } from "react-icons/bs";
 import Image from "next/image";
 import { verifyAuthentication } from "../../../utils/verifyAuth";
+import { fetchOrderAPI } from "../../../APIs/order";
 
 
-export const getServerSideProps = (ctx) => {
+export const getServerSideProps = async(ctx) => {
   const auth = verifyAuthentication(ctx.req);
   if (auth.state) {
-    return {props : {}};
+    try {
+      console.log(ctx.query.id)
+    const orderData = await fetchOrderAPI(ctx.query.id,auth.token);
+    return {props : {order : orderData.data.order, user : auth.decodedData.user}};
+    }catch(err) {
+      console.log(err);
+      return {props : {user : auth.decodedData.user}};
+    }
   }
   return {
     redirect : {
-      destination : '/'
+      destination : '/auth'
     }
   }
 };
 
 
 
-const OrderItem = () => {
+const OrderItem = ({details}) => {
   return (
     <div className="flex items-center space-x-5 p-1 border-[1px] rounded-md">
-      <div className="p-1">
-        <Image src="/product/p1.png" height={50} width={50} />
+      <div className="p-1 h-[50px] w-[50px] relative">
+        <Image src={details.image} layout='fill' objectFit="contain" />
       </div>
       <div>
-        <div className="font-semibold">Calpol Syrup</div>
-        <div className="text-accent text-sm ">Price : Rs.129</div>
+        <div className="font-semibold">{details.name}</div>
+        <div className="text-accent text-sm ">Price : ₹{details.cost}</div>
       </div>
       <hr />
     </div>
   );
 };
 
-const Order = () => {
+const Order = ({order,user}) => {
   return (
     <AccountLayout>
       <div className="font-default 2xl:px-5">
         <div className="p-2">
           <div className="text-sm text-gray-500 font-semibold">
-            #120239034839
+            #{order?.orderId}
           </div>
           <div className="mt-1 text-xl font-poppins font-semibold">
             ORDER DETAILS
@@ -49,21 +57,21 @@ const Order = () => {
         <div className="mt-2 p-2">
           <div className="text-green-600 text-lg ">Delivered</div>
           <div className="mt-5">
-            <div className="h-[5px] flex items-center justify-between w-[100%] bg-primary">
+            <div className="h-[5px] flex items-center justify-between w-[100%] bg-flipkartBlue">
               <div className="flex flex-col mt-[15px] justify-center">
-                <div className="h-[20px] w-[20px] bg-primary rounded-full flex items-center justify-center text-white">
+                <div className="h-[20px] w-[20px] bg-flipkartBlue rounded-full flex items-center justify-center text-white">
                   <BsCheck2 />
                 </div>
                 <div className="text-xs">Ordered</div>
               </div>
               <div className="flex flex-col mt-[15px] items-center justify-center">
-                <div className="h-[20px] w-[20px] bg-primary rounded-full flex items-center justify-center text-white">
+                <div className="h-[20px] w-[20px] bg-flipkartBlue rounded-full flex items-center justify-center text-white">
                   <BsCheck2 />
                 </div>
                 <div className="text-xs">Dispatched</div>
               </div>
               <div className="flex flex-col mt-[15px] items-end">
-                <div className="h-[20px] w-[20px] bg-primary rounded-full flex items-center justify-center text-white">
+                <div className="h-[20px] w-[20px] bg-flipkartBlue rounded-full flex items-center justify-center text-white">
                   <BsCheck2 />
                 </div>
                 <div className="text-xs">Delivered</div>
@@ -74,9 +82,7 @@ const Order = () => {
         <div className="mt-10 p-2">
           <div className="font-semibold text-lg">Items in this Order</div>
           <div className="mt-2 space-y-3">
-            <OrderItem />
-            <OrderItem />
-            <OrderItem />
+            <OrderItem details={order.product}/>
           </div>
         </div>
         <div className="mt-5 p-2">
@@ -84,23 +90,23 @@ const Order = () => {
           <div className="mt-3">
             <div className="justify-between flex">
               <div>Items Subtotal(3) : </div>
-              <div>Rs. 228.00</div>
+              <div>₹{order.totalCost}</div>
             </div>
             <div className="justify-between flex">
               <div>Delivery Charges : </div>
-              <div>Rs. 50.00</div>
+              <div>₹{0}</div>
             </div>
             <div className="justify-between flex">
               <div>Total Tax : </div>
-              <div>Rs. 30.00</div>
+              <div>₹{0}</div>
             </div>
             <div className="justify-between flex mt-3">
               <div className="font-bold">Grand Total : </div>
-              <div className="font-bold">Rs. 228.00</div>
+              <div className="font-bold">₹{order.totalCost}</div>
             </div>
             <div className="justify-between flex mt-1">
               <div className="font-bold text-green-600">Total Savings : </div>
-              <div className="font-bold text-green-600">Rs. 100.00</div>
+              <div className="font-bold text-green-600"> ₹{0}</div>
             </div>
           </div>
         </div>
@@ -113,7 +119,7 @@ const Order = () => {
           </div>
         </div>
         <div className="flex mt-7 p-2">
-          <div className="px-3 py-1 bg-accent text-white rounded-md">
+          <div className="px-3 py-1 bg-red-500 cursor-pointer text-white rounded-md">
             Cancel Order
           </div>
         </div>

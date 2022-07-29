@@ -49,9 +49,9 @@ const Product = ({productDetails}) => {
           </div>
         </div>
         <div className="flex w-full items-end flex-col text-right">
-            <div className="text-2xl font-semibold">{productDetails.cost}</div>
+            <div className="text-2xl font-semibold">₹{productDetails.cost}</div>
             <div className="flex text-gray-500 mt-2 gap-3 justify-end text-sm w-full">
-                <div className=""><strike>{productDetails.cost+5000}</strike></div>
+                <div className=""><strike>₹{productDetails.cost+5000}</strike></div>
                 <div className="text-green-400   font-semibold ">56% Off</div>
             </div>
             <button disabled={loading} className=" mt-7 py-2 text-white cursor-pointer px-8 bg-flipkartBlue disabled:opacity-75 w-fit rounded-sm" onClick={handleCart}>{loading?'Loading...':isIncluded?'Remove from Cart':'Add to Cart'}</button>

@@ -2,7 +2,22 @@ import React, { useState } from 'react'
 import SellerPanelLayout from '../../../components/Seller/SellerPanelLayout'
 import OrderDrawer from '../../../components/Seller/OrderDrawer'
 import SearchBar from '../../../components/SearchBar'
+import { verifyAuthentication } from '../../../utils/verifyAuth';
+import { fetchAllOrderAPI } from '../../../APIs/order';
 
+
+export const getServerSideProps = async(ctx) => {
+    const auth = verifyAuthentication(ctx.req);
+    if (auth.state && auth.decodedData.user.role==='seller') {
+        const fetchedOrders = await fetchAllOrderAPI(auth.token);
+      return {props : {orders : fetchedOrders.data.orders, user : auth.decodedData.user}};
+    }
+    return {
+      redirect : {
+        destination : '/auth'
+      }
+    }
+  };
 
 const OrderItem = ()=>{
     const [isOpen,setIsOpen] = useState(false);
@@ -28,7 +43,7 @@ const OrderItem = ()=>{
     )
 }
 
-const SellerPanel = () => {
+const SellerPanel = ({orders,user}) => {
   
   return (
     <SellerPanelLayout>
@@ -39,9 +54,7 @@ const SellerPanel = () => {
                 <SearchBar/>
                 </div>
                 <div className='mt-7'>
-                    <OrderItem/>
-                    <OrderItem/>
-                    <OrderItem/>
+                   {orders.map(o=><OrderItem details={o}/>)}
                 </div>
             </div>
         </div>

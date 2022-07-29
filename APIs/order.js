@@ -10,3 +10,9 @@ export const fetchAllOrderAPI = async(token)=>{
     const result = await serverInstance.get('/order');
     return result;
 }
+
+export const fetchOrderAPI = async(id,token)=>{
+    const serverInstance = createServerInstance(token);
+    const result = await serverInstance.get(`/order/${id}`);
+    return result;
+}

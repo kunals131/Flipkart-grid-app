@@ -31,7 +31,7 @@ const AccountSidebar = () => {
     const dispatch = useDispatch();
     const router = useRouter();
   return (
-    <div className='bg-white rounded-md lg:w-[110%] xl:w-[112%]'>
+    <div className='bg-white pb-7 rounded-md lg:w-[110%] xl:w-[112%]'>
         <div className='bg-white flex space-x-5 font-poppins py-7 px-4 rounded-md'>
             <div className='h-[60px] flex items-center bg-primary bg-opacity-20 justify-center w-[60px]  rounded-full'>
                 <TiUser size={40} className='text-primary'/>
@@ -42,18 +42,18 @@ const AccountSidebar = () => {
                 <div className='text-sm mt-[1px] text-gray-400'>{user.phone}</div>
             </div>
         </div>
-        <div className='mt-2 p-3 lg:p-2 bg-white space-y-4'>
+        <div className='mt-2 p-3 lg:p-2  bg-white space-y-4'>
               <MenuItem onClick={()=>router.push('/account/user')} title={'Account Information'} icon={<TiUser size={24} className='text-gray-500'/>}/>
               <hr />
               <MenuItem onClick={()=>router.push('/account/myorders')} title={'My Orders'} icon={<GoPackage className='text-gray-600' size={22}/>}/>
               <hr />
-              <MenuItem onClick={()=>router.push('/account/myprescriptions')} title={'My Prescriptions'} icon={<AiOutlineFileDone className='text-gray-600' size={22}/>}/>
-              <hr />
-              <MenuItem onClick={()=>router.push('/account/myaddress')} title={'My Address'} icon={<AiOutlineHome className='text-gray-600' size={22}/>}/>
-              <hr />
-              <MenuItem onClick={()=>router.push('/account/saveditems')} title={'Saved Items'} icon={<BsBag className='text-gray-600' size={22}/>}/>
-              <hr />
-              <MenuItem onClick={()=>router.push('/account/security')} title={'Security'} icon={<RiLockPasswordLine className='text-gray-600' size={22}/>}/>
+              <MenuItem onClick={()=>router.push('/account/myprescriptions')} title={'My Warranty NFTs'} icon={<AiOutlineFileDone className='text-gray-600' size={22}/>}/>
+              {/* <hr /> */}
+              {/* <MenuItem onClick={()=>router.push('/account/myaddress')} title={'My Address'} icon={<AiOutlineHome className='text-gray-600' size={22}/>}/> */}
+              {/* <hr /> */}
+              {/* <MenuItem onClick={()=>router.push('/account/saveditems')} title={'Saved Items'} icon={<BsBag className='text-gray-600' size={22}/>}/> */}
+              {/* <hr /> */}
+              {/* <MenuItem onClick={()=>router.push('/account/security')} title={'Security'} icon={<RiLockPasswordLine className='text-gray-600' size={22}/>}/> */}
               <hr />
               <MenuItem onClick={()=>{dispatch(logoutUser(router))}} title={'Logout'} icon={<RiLogoutCircleLine className='text-gray-600' size={22}/>}/>
               
