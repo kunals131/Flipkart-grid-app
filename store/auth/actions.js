@@ -15,10 +15,12 @@ export const setAuthDetails = (data)=>{
     }
 }
 
-export const loginUser = (formData)=> async (dispatch,getState)=>{
+export const loginUser = (formData,router)=> async (dispatch,getState)=>{
     try {
         const userData = await loginUserAPI(formData);
         console.log(userData);
+        router.push('/');
+        setAuthDetails(userData.data.user);
     }catch(err) {
         console.log(err);
     }

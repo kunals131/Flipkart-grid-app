@@ -7,7 +7,27 @@ import InputField from '../components/InputField';
 import SelectInput from '../components/SelectRole';
 import { useDispatch } from 'react-redux';
 import { loginUser, signUpUser } from '../store/auth/actions';
-const Auth = () => {
+import {useRouter} from 'next/router';
+import { checkAuthAPI } from '../APIs/auth';
+import { verifyAuthentication } from '../utils/verifyAuth';
+
+
+
+export const getServerSideProps = (ctx) => {
+  const auth = verifyAuthentication(ctx.req);
+  if (auth.state) {
+    return {
+      redirect : {
+        destination : '/'
+      }
+    }
+  }
+  return {
+    props: {},
+  };
+};
+
+const Auth = ({props}) => {
     const [isLogin,setIsLogin] = useState(true);
     const [form,setForm] = useState({
         fullName : '',
@@ -16,8 +36,9 @@ const Auth = () => {
         confirmPassword : '',
         businessName : '',
         role : 'customer',
-        phoneNumber : '',
+        phone : '',
     })
+    const router = useRouter();
     const [error,setError] = useState('');
     const dispatch = useDispatch();
     const handleChange = (e)=>{
@@ -26,7 +47,7 @@ const Auth = () => {
     const handleSubmit = ()=>{
         console.log(form);
         if(isLogin) {
-            dispatch(loginUser({email : form.email,password : form.password}));
+            dispatch(loginUser({email : form.email,password : form.password}, router));
         }
         else {
             dispatch(signUpUser(form));
@@ -45,7 +66,7 @@ const Auth = () => {
         <form className={`${isLogin?'w-[380px]':'w-[450px]'} transition-all mt-6  space-y-4`}>
             {!isLogin&& <InputField value={form.fullName} onChange={handleChange} name='fullName' label={'Full Name'} placeholder='Enter your Full Name' />}
             <InputField value={form.email} onChange={handleChange} name='email' label={'Email'} placeholder='Enter your Email' />
-            {!isLogin&& <InputField value={form.phoneNumber} onChange={handleChange} name='phoneNumber' label={'Phone Number'} placeholder='Enter your phone Number' />}
+            {!isLogin&& <InputField value={form.phone} onChange={handleChange} name='phone' label={'Phone Number'} placeholder='Enter your phone Number' />}
             <div className='flex items-center gap-2'>
             {!isLogin&& <SelectInput value={form.role} name='role' onChange={handleChange} label={'Role'} placeholder='Enter your phone Number' />}
             {!isLogin&&form.role==='seller'&& <InputField value={form.businessName} onChange={handleChange} name='businessName' label={'Business Name'} placeholder='Business Name'/>}
