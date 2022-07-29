@@ -8,6 +8,7 @@ module.exports = async function({getNamedAccounts,deployments}) {
     const chainId = network.config.chainId;
     const args = [];
     console.log('deploying...');
+    console.log(`Deployed by : ${deployer}`);
     const sellerContract = await deploy("Seller",{
         from : deployer,
         args,

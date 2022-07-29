@@ -50,7 +50,7 @@ module.exports = {
     localhost : {
       url : 'HTTP://127.0.0.1:7545',
       //accounts are placed by hardhat
-      chainId : 31337
+      chainId : 1337
     }
   },
   etherscan : {
