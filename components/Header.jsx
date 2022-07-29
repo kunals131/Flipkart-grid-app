@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import WhiteLogo from "../public/assets/whitelogo.svg";
 import {BsFillPersonFill} from 'react-icons/bs';
 import { FiSearch } from "react-icons/fi";
+import { useSelector } from "react-redux";
 import {MdShoppingCart} from 'react-icons/md';
+import {useDispatch} from 'react-redux';
+import { fetchAllCartItems } from "../store/cart/actions";
 const Header = () => {
+  const {isLoggedin,user} = useSelector(state=>state.auth);
+  const {items,loading} = useSelector(state=>state.cart);
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    if (isLoggedin) {
+      console.log('fetching cart..')
+    dispatch(fetchAllCartItems()); 
+    }
+    console.log(isLoggedin);
+  }, [isLoggedin])
   return (
     <div className="py-3 px-32 bg-flipkartBlue">
       <div className="flex items-center justify-between">
@@ -21,13 +34,14 @@ const Header = () => {
               <FiSearch className="text-gray-500" size={20} />
             </div>
           </div>
-          <div className="px-10 py-[6px] rounded-sm font-semibold cursor-pointer bg-bgPrimary-600 text-flipkartBlue">Login</div>
+          {!isLoggedin&&<div className="px-10 py-[6px] rounded-sm font-semibold cursor-pointer bg-bgPrimary-600 text-flipkartBlue">Login</div>}
+          {isLoggedin&&<div className="text-white">{user?.email || 'email'}</div>}
           <div className="text-white font-[500] cursor-pointer hover:underline">Become a Seller</div>
         </div>
         <div className="flex items-center gap-5 text-white">
           
           <div className="flex items-center gap-1 cursor-pointer">
-            <div className="relative"><MdShoppingCart size={25}/><div className="text-xs absolute bg-flipkartYellow rounded-full text-black w-[15px] h-[15px] flex items-center justify-center -top-1 -right-1">1</div></div>
+            <div className="relative"><MdShoppingCart size={25}/><div className="text-xs absolute bg-flipkartYellow rounded-full text-black w-[15px] h-[15px] flex items-center justify-center -top-1 -right-1">{items?.length || 0}</div></div>
             <div className="font-[500]">Cart</div>
             </div>
         </div>

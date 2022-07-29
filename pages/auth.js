@@ -30,7 +30,7 @@ export const getServerSideProps = (ctx) => {
 const Auth = ({props}) => {
     const [isLogin,setIsLogin] = useState(true);
     const [form,setForm] = useState({
-        fullName : '',
+        username : '',
         email : '',
         password : '',
         confirmPassword : '',
@@ -64,7 +64,7 @@ const Auth = ({props}) => {
         <div className='mt-3 text-gray-400'>Get your orders, Reccomendations & wishlist items</div>
 
         <form className={`${isLogin?'w-[380px]':'w-[450px]'} transition-all mt-6  space-y-4`}>
-            {!isLogin&& <InputField value={form.fullName} onChange={handleChange} name='fullName' label={'Full Name'} placeholder='Enter your Full Name' />}
+            {!isLogin&& <InputField value={form.username} onChange={handleChange} name='Full Name' label={'Full Name'} placeholder='Enter your Full Name' />}
             <InputField value={form.email} onChange={handleChange} name='email' label={'Email'} placeholder='Enter your Email' />
             {!isLogin&& <InputField value={form.phone} onChange={handleChange} name='phone' label={'Phone Number'} placeholder='Enter your phone Number' />}
             <div className='flex items-center gap-2'>
