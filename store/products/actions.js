@@ -44,7 +44,7 @@ export const addSellerProduct = (data)=>async(dispatch,getState)=>{
  try {
     dispatch(setProductsLoading(true));
     const addedProduct = await addSellerProductAPI(data);
-    dispatch(addSellerProductState(data));
+    dispatch(addSellerProductState(addedProduct.data.product));
  }catch(err){
     console.log(err);
  } finally{
@@ -52,11 +52,12 @@ export const addSellerProduct = (data)=>async(dispatch,getState)=>{
  }   
 }
 
-export const editSellerProduct = (data)=>async(dispatch,getState)=>{
+export const editSellerProduct = (id,data)=>async(dispatch,getState)=>{
     try {
         dispatch(setProductsLoading(true));
-        const editedProduct = await editSellerProductAPI(data);
-        dispatch(editSellerProductState(data));
+        const result = await editSellerProductAPI(id,data);
+        console.log(result.data.updatedProduct);
+        dispatch(editSellerProductState(result.data.updatedProduct));
     }catch(err){
         console.log(err);
     }finally{

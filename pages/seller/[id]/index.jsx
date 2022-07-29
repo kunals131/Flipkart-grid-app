@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SellerPanelLayout from '../../../components/Seller/SellerPanelLayout'
 import OrderDrawer from '../../../components/Seller/OrderDrawer'
 import SearchBar from '../../../components/SearchBar'
 import { verifyAuthentication } from '../../../utils/verifyAuth';
 import { fetchAllOrderAPI } from '../../../APIs/order';
-
-
+import moment from 'moment'
+import { useDispatch,useSelector } from 'react-redux';
+import { setAllOrders } from '../../../store/order/actions';
 export const getServerSideProps = async(ctx) => {
     const auth = verifyAuthentication(ctx.req);
     if (auth.state && auth.decodedData.user.role==='seller') {
@@ -19,32 +20,38 @@ export const getServerSideProps = async(ctx) => {
     }
   };
 
-const OrderItem = ()=>{
+const OrderItem = ({details})=>{
     const [isOpen,setIsOpen] = useState(false);
     const handleClose = ()=>setIsOpen(false);
     return (
         <>
-        <OrderDrawer isOpen={isOpen} handleClose={handleClose}/>
+        <OrderDrawer data={details} isOpen={isOpen} handleClose={handleClose}/>
         <div onClick={()=>setIsOpen(true)} className='px-8 grid grid-cols-[2fr_1fr_1fr_1fr_1fr] hover:bg-gray-100 transition-all items-center py-5 border-b-[1px] border-gray-300'>
 
             <div className='flex items-center gap-3'>
                 <div className='w-[45px] h-[45px] bg-flipkartBlue rounded-md'></div>
                 <div className='text-sm'>
-                    <div className='font-[600]'>Iphone 11 and 13 others..</div>
-                    <div className='text-gray-400 mt-[3px]'>Pratham Rasal</div>
+                    <div className='font-[600]'>{details.product.name}</div>
+                    <div className='text-gray-400 mt-[3px]'>{details.customer.username}</div>
                 </div>
             </div>
-            <div className=''>31 March 2022, 13:00 PM</div>
-            <div className='text-white bg-flipkartBlue px-3 py-[3px] h-fit w-fit rounded-md text-sm cursor-pointer'>In Progress</div>
-            <div className=''>Indore, India</div>
-            <div className='text-green-600'>₹ 20</div>
+            <div className=''>{moment(details.createdAt).date()}  {moment(details.createdAt).format('MMM')} {moment(details.createdAt).year()}, {moment(details.createdAt).format('HH')}:{moment(details.createdAt).format('MM')}</div>
+            <div className='text-white bg-flipkartBlue px-3 py-[3px] h-fit w-fit rounded-md text-sm cursor-pointer'>{details.orderStatus}</div>
+            <div className=''>{details.orderDetails.customerAddress.city}, {details.orderDetails.customerAddress.country}</div>
+            <div className='text-green-600'>₹ {details.totalCost}</div>
         </div>
         </>
     )
 }
 
 const SellerPanel = ({orders,user}) => {
-  
+  console.log(orders);
+
+  const dispatch = useDispatch();
+  const {orders : stateOrders} = useSelector(state=>state.orders);
+  useEffect(()=>{
+    dispatch(setAllOrders(orders));
+  }, []);
   return (
     <SellerPanelLayout>
         <div className='w-full h-full'>
@@ -54,7 +61,7 @@ const SellerPanel = ({orders,user}) => {
                 <SearchBar/>
                 </div>
                 <div className='mt-7'>
-                   {orders.map(o=><OrderItem details={o}/>)}
+                   {stateOrders.map(o=><OrderItem key={o._id} details={o}/>)}
                 </div>
             </div>
         </div>

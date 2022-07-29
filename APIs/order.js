@@ -16,3 +16,9 @@ export const fetchOrderAPI = async(id,token)=>{
     const result = await serverInstance.get(`/order/${id}`);
     return result;
 }
+
+export const updateOrderStatusAPI = async(id,status,token)=>{
+    const serverInstance = createServerInstance(token);
+    const result = await serverInstance.post(`/order/${id}`, {status});
+    return result;
+}

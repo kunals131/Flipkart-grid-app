@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import AccountLayout from '../../../components/AccountLayout';
 import Image from 'next/image';
 
 import { verifyAuthentication } from '../../../utils/verifyAuth';
 import { fetchAllOrderAPI } from '../../../APIs/order';
 import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
+import { setAllOrders } from '../../../store/order/actions';
 export const getServerSideProps = async(ctx) => {
   const auth = verifyAuthentication(ctx.req);
   if (auth.state) {
@@ -82,6 +84,11 @@ const OrderItem = ({details})=>{
 
 const Orders = ({orders,user}) => {
   console.log(orders);
+  const dispatch = useDispatch();
+  const {orders : stateOrders} = useSelector(state=>state.orders);
+  useEffect(()=>{
+    dispatch(setAllOrders(orders));
+  }, []);
   return (
     <AccountLayout>
      <div className='p-3 font-poppins lg:p-4'>
@@ -102,7 +109,7 @@ const Orders = ({orders,user}) => {
         </div>
         <hr className='lg:hidden'/>
         <div className='mt-6 space-y-3 lg:space-y-6'>
-          {orders.map(o=><OrderItem details={o}/>)}
+          {stateOrders.map(o=><OrderItem details={o}/>)}
         </div>
       </div>
     </AccountLayout>

@@ -20,8 +20,8 @@ export const addSellerProductAPI = async(data,token)=>{
     return result;
 }
 
-export const editSellerProductAPI = async(updatedData,token)=>{
+export const editSellerProductAPI = async(id,updatedData,token)=>{
     const serverInstance = createServerInstance(token);
-    const result = await serverInstance.post(`/product/${updatedData._id}`);
+    const result = await serverInstance.patch(`/product/${id}`, updatedData);
     return result;
 }

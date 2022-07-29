@@ -4,6 +4,9 @@ import SearchBar from '../../../components/SearchBar'
 import ProductDrawer from '../../../components/Seller/ProductDrawer';
 import SellerPanelLayout from '../../../components/Seller/SellerPanelLayout'
 import { verifyAuthentication } from '../../../utils/verifyAuth';
+import Image from 'next/image';
+import { useDispatch,useSelector } from 'react-redux';
+import { setSellerProducts } from '../../../store/products/actions';
 
 export const getServerSideProps = async(ctx) => {
   const auth = verifyAuthentication(ctx.req);
@@ -25,30 +28,35 @@ export const getServerSideProps = async(ctx) => {
 };
 
 
-const ProductItem = ()=>{
+const ProductItem = ({details})=>{
   const [isOpen,setIsOpen] = useState(false);
   const handleClose = ()=>setIsOpen(false);
   return (
       <>
-      <ProductDrawer isOpen={isOpen} isEdit={true} handleClose={handleClose}/>
+      <ProductDrawer data={details} isOpen={isOpen} isEdit={true} handleClose={handleClose}/>
       <div onClick={()=>setIsOpen(true)} className='px-8 grid grid-cols-[1.4fr_2fr_1fr_1fr_1fr] hover:bg-gray-100 transition-all items-center py-5 border-b-[1px] border-gray-300'>
           <div className='flex items-center gap-3'>
-              <div className='w-[45px] h-[45px] bg-flipkartBlue rounded-md'></div>
-                  <div className='font-[600] text-sm'>Iphone 11 4GB/6GB</div>       
+              <div className='w-[45px] h-[45px]  rounded-md relative'>
+                <Image src={details.image} layout='fill' objectFit='contain'/>
+              </div>
+                  <div className='font-[600] text-sm'>{details.name}</div>       
           </div>
-          <div className=''>Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit.....</div>
-          <div className=' flex justify-end w-full px-3 py-[3px] h-fit rounded-md text-sm cursor-pointer'>1 year</div>
-          <div className='flex justify-end'>Category</div>
-          <div className='text-green-600 flex justify-end'>₹ 200000</div>
+          <div className=''>{details.description.slice(0,150)}</div>
+          <div className=' flex justify-end w-full px-3 py-[3px] h-fit rounded-md text-sm cursor-pointer'>{details.warranty} year</div>
+          <div className='flex justify-end'>{details.type}</div>
+          <div className='text-green-600 flex justify-end'>₹ {details.cost}</div>
       </div>
       </>
   )
 }
-const Inventory = ({products,user}) => {
+const Inventory = ({products:fetchedProducts,user}) => {
   const [isOpen,setIsOpen] = useState(false);
   const handleClose = ()=>setIsOpen(false);
-  // useEffect(()=>{
-  // }, [])
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(setSellerProducts(fetchedProducts));
+  }, [])
+  const {products,loading} = useSelector(state=>state.sellerProducts);
   return (
     <SellerPanelLayout>
        <ProductDrawer isOpen={isOpen} isEdit={false} handleClose={handleClose}/>
@@ -71,9 +79,7 @@ const Inventory = ({products,user}) => {
                   </div>
                 </div>
                 <div className='mt-0'>
-                  <ProductItem/>
-                  <ProductItem/>
-                  <ProductItem/>
+                  {products.map(product=><ProductItem key={product._id} details={product}/>)}
                 </div>
             </div>
         </div>

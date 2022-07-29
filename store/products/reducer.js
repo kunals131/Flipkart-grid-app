@@ -13,12 +13,7 @@ const sellerProductReducer = (state=initialState,action)=>{
         case actionTypes.SET_LOADING : return {...state,loading : action.payload};
         case actionTypes.SET_SELLER_PRODUCTS : return {...state,products : action.payload};
         case actionTypes.ADD_SELLER_PRODUCT : return {...state, products : [...state.products,action.payload]};
-        case actionTypes.EDIT_SELLER_PRODUCT : return {...state , products : state.products.filter(p=>{
-            if (p._id===action.payload._id) {
-                return action.payload;
-            }
-            else return p;
-        })}
+        case actionTypes.EDIT_SELLER_PRODUCT : return {...state,products : [...state.products.filter(p=>p._id!==action.payload._id), action.payload]}
         default : return state
     }
 }
