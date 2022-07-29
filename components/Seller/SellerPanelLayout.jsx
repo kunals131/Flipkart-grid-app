@@ -40,7 +40,8 @@ const SellerPanelLayout = ({children}) => {
             <div className='w-full flex justify-between items-center px-12  bg-white py-4 shadow-sm'>
                 <div className='flex items-center gap-2'>
                     <div className='text-xl font-semibold'>{user.businessName}</div>
-                    <div className='text-[0.6rem]   px-1 py-[3px] border-[1px] border-red-600 rounded-md text-red-600'>🔴 Not Verified</div>
+                    {!user.isSellerVerified&&<div className='text-[0.6rem]   px-1 py-[3px] border-[1px] border-red-600 rounded-md text-red-600'>🔴 Not Verified</div>}
+                    {user.isSellerVerified&&<div className='text-[0.6rem]   px-1 py-[3px] border-[1px] border-green-600 rounded-md text-green-600'>🟢  Verified</div>}
                 </div>
                 <div className='flex items-center gap-10'>
                     <div><BsFillBellFill className='text-gray-400' size={23}/></div>
@@ -48,7 +49,7 @@ const SellerPanelLayout = ({children}) => {
                         <div className='w-[40px] h-[40px] bg-flipkartYellow rounded-full'></div>
                         <div className='text-xs'>
                             <div className='font-[500] text-sm'>{user.username}</div>
-                            <div className='text-blue-500'>Admin</div>
+                            <div className='text-blue-500'>{user.role}</div>
                         </div>
                     </div>
                 </div>
