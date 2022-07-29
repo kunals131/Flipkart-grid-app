@@ -10,7 +10,7 @@ const ProductDrawer = ({isOpen,handleClose,data,isEdit}) => {
     <div className='w-[500px] p-7 h-[100vh] overflow-y-auto'>
         <div className='flex items-center justify-between w-full'>
         <div className="text-xl font-[600]">{isEdit?'Edit #55666':'Add Product'}</div>
-            <div className="">
+            <div className="" onClick={handleClose}>
               <MdClear size={24} />
             </div>
         </div>

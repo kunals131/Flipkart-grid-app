@@ -26,7 +26,7 @@ const OrderDrawer = ({ isOpen, handleClose }) => {
         <div className="w-[500px] p-7 h-[100vh] overflow-y-auto">
           <div className="flex items-center justify-between w-full">
             <div className="text-xl font-[500]">Order #23301</div>
-            <div className="">
+            <div className="" onClick={handleClose}>
               <MdClear size={24} />
             </div>
           </div>

@@ -44,7 +44,7 @@ const Header = () => {
           </div>
           {!isLoggedin&&<div className="px-10 py-[6px] rounded-sm font-semibold cursor-pointer bg-bgPrimary-600 text-flipkartBlue" onClick={()=>router.push('/auth')}>Login</div>}
           {isLoggedin&&<div className="text-white">{user?.email || 'email'}</div>}
-          <div className="text-white font-[500] cursor-pointer hover:underline">Become a Seller</div>
+          {isLoggedin&&user.role==='seller'&&<div className="text-white font-[500] cursor-pointer hover:underline" onClick={()=>router.push(`/seller/${user._id}`)}>Switch to Seller</div>}
         </div>
         <div className="flex items-center gap-5 text-white">
           

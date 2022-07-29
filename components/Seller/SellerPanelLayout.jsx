@@ -9,15 +9,17 @@ import {BsPeopleFill} from 'react-icons/bs';
 import {CgLogOut} from 'react-icons/cg';
 import {BsFillBellFill } from 'react-icons/bs';
 import SideBarIcon from './SidebarIcon';
+import { useRouter } from 'next/router';
 
 const SellerPanelLayout = ({children}) => {
+ const router = useRouter();
   return (
 <div className='grid grid-cols-[0.05fr_0.95fr] h-[100vh] w-full '>
         <div className='h-full flex flex-col items-center py-4 w-full bg-flipkartBlue'>
             <div className='w-[50px]'><Image src={WhiteIcon}/></div>
             <div className='mt-8 space-y-5'>
-                <SideBarIcon icon={<MdHome size="23" />} link="/" text="Home"/>
-                <SideBarIcon icon={<MdHome size="23" />} link="/seller/2/inventory" text="Inventory"/>
+                <SideBarIcon icon={<MdHome size="23" />} link={`/seller/${router.query.id}`} text="Home"/>
+                <SideBarIcon icon={<MdHome size="23" />} link={`/seller/${router.query.id}/inventory`} text="Inventory"/>
                 <SideBarIcon icon={<BsPeopleFill size="21" />} link="/" text="All Customers"/>
                 <SideBarIcon icon={<VscWorkspaceTrusted size="21" />} link="/" text="Verification Center"/>
             </div>

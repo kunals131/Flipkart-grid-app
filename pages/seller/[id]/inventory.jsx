@@ -1,8 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { fetchAllSellerProductsAPI } from '../../../APIs/products';
 import SearchBar from '../../../components/SearchBar'
 import ProductDrawer from '../../../components/Seller/ProductDrawer';
 import SellerPanelLayout from '../../../components/Seller/SellerPanelLayout'
+import { verifyAuthentication } from '../../../utils/verifyAuth';
 
+export const getServerSideProps = async(ctx) => {
+  const auth = verifyAuthentication(ctx.req);
+  if (auth.state && auth.decodedData.user.role==='seller') {
+    try {
+      const fetchProducts = await fetchAllSellerProductsAPI(ctx.query.id, auth.token);
+    return {props : {products : fetchProducts.data.products, user : auth.decodedData.user}};
+    }catch(err) {
+      return {
+        notFound : true
+      }
+    }
+  }
+  return {
+    redirect : {
+      destination : '/auth'
+    }
+  }
+};
 
 
 const ProductItem = ()=>{
@@ -24,14 +44,22 @@ const ProductItem = ()=>{
       </>
   )
 }
-const Inventory = () => {
+const Inventory = ({products,user}) => {
+  const [isOpen,setIsOpen] = useState(false);
+  const handleClose = ()=>setIsOpen(false);
+  // useEffect(()=>{
+  // }, [])
   return (
     <SellerPanelLayout>
+       <ProductDrawer isOpen={isOpen} isEdit={false} handleClose={handleClose}/>
          <div className='w-full h-full'>
             <div className='py-5'>
                 <div className='px-6 w-full'>
                     <div className='mb-5 text-xl font-[500]'>Inventory</div>
+                    <div className='flex gap-5'>
                 <SearchBar/>
+                <button className='px-5 bg-flipkartYellow rounded-md' onClick={()=>setIsOpen(true)}>Add</button>
+                </div>
                 </div>
                 <div className='mt-2 border-b-[1px] border-b-flipkartBlue'>
                   <div className='px-8 grid grid-cols-[1.4fr_2fr_1fr_1fr_1fr]  transition-all items-center py-5'>
