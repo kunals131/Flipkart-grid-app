@@ -31,3 +31,10 @@ export const setVerification = async(formData,token)=>{
     const result = await serverInstance('/auth/verifySeller', formData);
     return result;
 }
+
+
+export const fetchSellerWarrantyAddresses = async(wallet,token)=>{
+    const serverInstance = createServerInstance(token);
+    const result = await serverInstance.get(`/order/warranty-contracts/${wallet}`);
+    return result;
+}
