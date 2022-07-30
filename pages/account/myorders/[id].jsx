@@ -141,7 +141,7 @@ const Order = ({order,user}) => {
       orderId : order.orderId,
       activeTokenURI : 'ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4',
       expireTokenURI : 'ipfs://QmcAYTohjhLJqrPjtasn6EbGDiYGPck1MGcFb5iL9ppnpQ',
-      expiry : '500',
+      expiry : 100,
     }
   })
   const {runContractFunction : getTokenDetailsFromOrderId} = useWeb3Contract({
