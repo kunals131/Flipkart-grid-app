@@ -310,6 +310,8 @@ const Order = ({order,user}) => {
             </div>}
 
           </div>:<div>Order has not been delivered yet..</div>}
+
+          
         </div>
 
 

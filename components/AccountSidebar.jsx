@@ -47,7 +47,7 @@ const AccountSidebar = () => {
               <hr />
               <MenuItem onClick={()=>router.push('/account/myorders')} title={'My Orders'} icon={<GoPackage className='text-gray-600' size={22}/>}/>
               <hr />
-              <MenuItem onClick={()=>router.push('/account/myprescriptions')} title={'My Warranty NFTs'} icon={<AiOutlineFileDone className='text-gray-600' size={22}/>}/>
+              <MenuItem onClick={()=>router.push('/account/mynfts')} title={'My Warranty NFTs'} icon={<AiOutlineFileDone className='text-gray-600' size={22}/>}/>
               {/* <hr /> */}
               {/* <MenuItem onClick={()=>router.push('/account/myaddress')} title={'My Address'} icon={<AiOutlineHome className='text-gray-600' size={22}/>}/> */}
               {/* <hr /> */}
