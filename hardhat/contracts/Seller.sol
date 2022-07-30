@@ -27,15 +27,16 @@ contract Seller{
     event SellerCreated(address indexed warrantyContractAddress); 
     
 
-    function createSeller(address sellerAddress,string memory NFTName, string memory NFTSymbol) public {
-        // if (sellers[sellerAddress].isValue) {
+    function createSeller(string memory NFTName, string memory NFTSymbol) public returns(WarrantyNFT){
+        // if (sellers[msg.sender].isValue) {
         //     revert Seller_SellerAlreadyExists();
         // }
 
-            WarrantyNFT newContract =  new WarrantyNFT(sellerAddress, NFTName,NFTSymbol);
-            sellers[sellerAddress].WarrantyContract = newContract;
-            sellers[sellerAddress].isValue = true;
+            WarrantyNFT newContract =  new WarrantyNFT(msg.sender, NFTName,NFTSymbol);
+            sellers[msg.sender].WarrantyContract = newContract;
+            sellers[msg.sender].isValue = true;
             emit SellerCreated(address(newContract));
+            return sellers[msg.sender].WarrantyContract;
     }
 
     function getWarrantyContract() public view returns (WarrantyNFT) {

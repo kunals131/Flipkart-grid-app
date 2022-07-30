@@ -2,14 +2,28 @@ import React from 'react'
 import { useDispatch } from 'react-redux';
 import { placeOrder } from '../../store/order/actions';
 import Input from '../Input'
+import {useMoralis} from 'react-moralis'
+import {useNotification} from 'web3uikit'
 
 const Payment = ({step,setStep,form,setForm}) => {
   const handleChange = (e)=>{
     setForm((prev)=>({...prev,[e.target.name] : e.target.value}));
 }
+const {isWeb3Enabled,isWeb3EnableLoading,account,chainId} = useMoralis();
 const dispatch = useDispatch();
+const notificationDispatch = useNotification();
 const handlePlaceOrder = ()=>{
-  dispatch(placeOrder(form,setStep));
+  if (isWeb3Enabled) {
+  dispatch(placeOrder({...form, customerWallet : account},setStep,notificationDispatch));
+  }
+  else {
+    notificationDispatch({
+      type : 'error',
+      message : 'Please connect your wallet to continue',
+      title : 'Place Order',
+      position : 'topR'
+    })
+  }
 }
   return (
     <div>

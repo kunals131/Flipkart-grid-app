@@ -64,16 +64,22 @@ contract WarrantyNFT is ERC721 {
     //see if some order already has issed warranty NFT;
     mapping(uint256 => uint256) private issuedNFT;
 
-    function placeOrder(uint256 orderId) public {
+    function placeOrder(address customerAddress,uint256 orderId) public {
         bool isOrderExists = isExistsInArray(
-            customerToOrders[msg.sender],
+            customerToOrders[customerAddress],
             orderId
         );
         if (isOrderExists) {
             revert WarrantyNFT__alreadyExists();
         }
-        customerToOrders[msg.sender].push(orderId);
+        customerToOrders[customerAddress].push(orderId);
     }
+
+    function getCustomerOrders() public view returns(uint256[] memory){
+        return customerToOrders[msg.sender];
+    }
+    
+ 
 
    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         NftTokenData memory currentData = NftTokenToData[tokenId];
@@ -86,15 +92,16 @@ contract WarrantyNFT is ERC721 {
         }
    }
 
+
+
     function mintWarrantyNFT(
-        address customer,
         uint256 orderId,
         string memory activeTokenURI,
         string memory expireTokenURI,
         uint256 expiry
     ) public onlyCustomer {
         bool isOrderExists = isExistsInArray(
-            customerToOrders[customer],
+            customerToOrders[msg.sender],
             orderId
         );
         if (!isOrderExists) {
@@ -105,7 +112,7 @@ contract WarrantyNFT is ERC721 {
         }
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        _safeMint(customer, newItemId);
+        _safeMint(msg.sender, newItemId);
         NftTokenToData[newItemId] = NftTokenData({
             tokenId: newItemId,
             expiry: expiry,
@@ -115,8 +122,8 @@ contract WarrantyNFT is ERC721 {
             expired: false
         });
         issuedNFT[orderId] = newItemId;
-        CustomerAddressToTokens[customer].push(newItemId);
-        emit NFTMinted(newItemId, customer);
+        CustomerAddressToTokens[msg.sender].push(newItemId);
+        emit NFTMinted(newItemId, msg.sender);
     }
 
     function getCustomersTokens() public view returns(string[] memory){
@@ -126,6 +133,14 @@ contract WarrantyNFT is ERC721 {
             tokenURIs[i] = tokenURI(customerNFTTokens[i]);
         }
         return tokenURIs;
+    }
+
+    function getTokenDetailsFromOrderId(uint256 orderId) public view returns(uint256) {
+        if (issuedNFT[orderId] == 0) {
+            revert WarrantyNFT__orderNotFound();
+        }
+        uint256 tokenId = issuedNFT[orderId];
+        return tokenId;
     }
 
    

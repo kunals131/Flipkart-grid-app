@@ -12,7 +12,8 @@ import SideBarIcon from './SidebarIcon';
 import { useRouter } from 'next/router';
 import {GoPackage} from 'react-icons/go';   
 import {useSelector, useDispatch} from 'react-redux'
-import { checkAuth } from '../../store/auth/actions';
+import { checkAuth, logoutUser } from '../../store/auth/actions';
+import {ConnectButton} from 'web3uikit';
 
 const SellerPanelLayout = ({children}) => {
  const router = useRouter();
@@ -30,10 +31,10 @@ const SellerPanelLayout = ({children}) => {
                 <SideBarIcon icon={<MdHome size="23" />} link={`/seller/${router.query.id}`} text="Home"/>
                 <SideBarIcon icon={<GoPackage size="23" />} link={`/seller/${router.query.id}/inventory`} text="Inventory"/>
                 <SideBarIcon icon={<BsPeopleFill size="21" />} link="/" text="All Customers"/>
-                <SideBarIcon icon={<VscWorkspaceTrusted size="21" />} link="/" text="Verification Center"/>
+                <SideBarIcon icon={<VscWorkspaceTrusted size="21" />} link={`/seller/${router.query.id}/verify`}text="Verification Center"/>
             </div>
             <div className='h-full flex items-end'>
-            <SideBarIcon icon={<CgLogOut size={23} />} link='/' text="Go Back"/>
+            <SideBarIcon icon={<CgLogOut size={23} />} link='/' text="Go Back" onClick={()=>dispatch(logoutUser())}/>
             </div>
         </div>
         <div className='bg-bgPrimary-600'>
@@ -51,6 +52,7 @@ const SellerPanelLayout = ({children}) => {
                             <div className='font-[500] text-sm'>{user.username}</div>
                             <div className='text-blue-500'>{user.role}</div>
                         </div>
+                        <ConnectButton moralisAuth={false}/>
                     </div>
                 </div>
             </div>

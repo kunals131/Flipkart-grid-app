@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AccountLayout from "../../../components/AccountLayout";
 import { BsCheck2 } from "react-icons/bs";
 import Image from "next/image";
 import { verifyAuthentication } from "../../../utils/verifyAuth";
 import { fetchOrderAPI } from "../../../APIs/order";
-
+import { Button } from "@mui/material";
+import {useNotification} from 'web3uikit';
+import {useMoralis, useWeb3Contract} from 'react-moralis';
+import WarrantyABI from '../../../constants/WarrantyNFTABI.json'
+import {useDispatch} from 'react-redux';
+import { mintNftOrder } from "../../../store/order/actions";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async(ctx) => {
   const auth = verifyAuthentication(ctx.req);
@@ -15,7 +21,7 @@ export const getServerSideProps = async(ctx) => {
     return {props : {order : orderData.data.order, user : auth.decodedData.user}};
     }catch(err) {
       console.log(err);
-      return {props : {user : auth.decodedData.user}};
+      return {notFound : true};
     }
   }
   return {
@@ -43,6 +49,186 @@ const OrderItem = ({details}) => {
 };
 
 const Order = ({order,user}) => {
+  const [warrantyStatus,setWarrantyStatus] = useState(false);
+  const {account,chainId,isWeb3Enabled} = useMoralis();
+  const [nftURI,setNFTURI] = useState(false);
+  const [nftLoading,setNFtLoading] = useState(false);
+  const {runContractFunction : tokenURI} = useWeb3Contract({
+    abi: WarrantyABI,
+    contractAddress: order.seller.warrantyAddress,
+    functionName: "tokenURI",
+    params: {
+      tokenId : order.isNftMinted?order.tokenId:'1'
+    }
+  })
+  const router = useRouter();
+
+  useEffect(()=>{
+    const fetchTokenURI = async()=>{
+      if (order.isNftMinted) {
+        const handleTokenSuccess = (result)=>{
+          dispatchNotification({
+            type : 'info',
+            message : `NFT Detected with token URI : ${result}, token ID : ${order.tokenId}`,
+            position : 'topR',
+            title : 'NFT Detected!'
+          })
+          setNFtLoading(false);
+          setNFTURI(result);
+        }
+        setNFtLoading(true);
+        const tokenLink = await tokenURI({
+          onSuccess : handleTokenSuccess,
+          onError :(err)=>console.log(err)
+        });
+        console.log(tokenLink);
+   
+      }
+    }
+    if (!nftURI && isWeb3Enabled) {
+    fetchTokenURI();
+    }
+  }, [order, isWeb3Enabled])
+
+
+  const dispatchNotification = useNotification();
+  const handleWeb3NotEnabled = ()=>{
+    dispatchNotification({
+      type : 'error',
+      message : 'Please Connect your wallet',
+     title : 'Wallet Connection',
+     position : 'topR'
+    })
+  }
+  const handleInCorrectAddress = ()=>{
+    dispatchNotification({
+      type : 'error',
+      message : `This Wallet Address is not linked with the wallet, Please connect to ${order.customerWallet}`,
+      position : 'topR',
+      title : 'Wallet Connection'
+    })
+  }
+  const handleError = (err,title)=>{
+    dispatchNotification({
+      type : 'error',
+      message :err,
+      position : 'topR',
+      title : title
+    })
+  }
+  const handleSuccess = (result,message,title,callback)=>{
+    dispatchNotification({
+      type : 'success',
+      message :message,
+      position : 'topR',
+      title : title
+    })
+    if (callback) callback(result);
+  }
+  const dispatch = useDispatch();
+
+  // const {runContractFunction : getCustomerOrders} = useWeb3Contract({
+  //   abi: WarrantyABI,
+  //   contractAddress: order.seller.warrantyAddress,
+  //   functionName: "getCustomerOrders",
+  //   params: {}
+  // })
+  const {runContractFunction : mintWarrantyNFT} = useWeb3Contract({
+    abi: WarrantyABI,
+    contractAddress: order.seller.warrantyAddress,
+    functionName: "mintWarrantyNFT",
+    params: {
+      orderId : order.orderId,
+      activeTokenURI : 'ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4',
+      expireTokenURI : 'ipfs://QmcAYTohjhLJqrPjtasn6EbGDiYGPck1MGcFb5iL9ppnpQ',
+      expiry : '500',
+    }
+  })
+  const {runContractFunction : getTokenDetailsFromOrderId} = useWeb3Contract({
+    abi: WarrantyABI,
+    contractAddress: order.seller.warrantyAddress,
+    functionName: "getTokenDetailsFromOrderId",
+    params: {
+     orderId : order.orderId
+    }
+  })
+  
+  const handleCheckWarrantyStatus = async()=>{
+    setWarrantyStatus(true)
+  }
+  
+  // const handleCheckWarrantyStatus = async()=>{
+  //   if (!isWeb3Enabled) return handleWeb3NotEnabled();
+  //   if (account !== order.customerWallet) return handleInCorrectAddress();
+  //   try {
+  //     const callFunction = (result)=>{
+  //      const stringOrderIds = result.map(r=>r.toString());
+  //      console.log(stringOrderIds);
+  //      if (stringOrderIds.includes(order.orderId)) {
+  //       handleSuccess(order.orderId,"NFT has been issued, Please claim your warranty", "Warranty Status");
+  //       setWarrantyStatus(true);
+  //      }
+  //      else {
+  //       handleError("NFT has not been issued yet", "Warranty Status");
+  //      }
+  //     }
+  //     const result = await getCustomerOrders({
+  //       onError : ()=>handleError('Something Went Wrong', 'Warranty Status Error'),
+  //       onSuccess:  (res)=>handleSuccess(res,'Warranty Result has been fetched', 'Warranty Status',callFunction)
+  //     })
+  //     console.log(result);
+  //   }catch(err) {
+  //     console.log(err);
+  //   }
+
+  // }
+  const handleClaimWarranty = async()=>{
+    if (!isWeb3Enabled) return handleWeb3NotEnabled();
+    if (account !== order.customerWallet) return handleInCorrectAddress();
+    
+    const handleMintSuccess = async()=>{
+      const tokenId = await getTokenDetailsFromOrderId(order.orderId);
+      dispatchNotification({
+        type : 'success',
+        message : `NFT Minted on chain with tokenId : ${tokenId}`,
+        position : 'topR',
+        title : 'NFT Mint'
+      })
+      console.log(tokenId);
+      dispatch(mintNftOrder(order._id, tokenId.toString(),dispatchNotification));
+      
+    }
+    const handleMintError = ()=>{
+      dispatchNotification({
+        type : 'error',
+        message : `Something went wrong!`,
+        position : 'topR',
+        title : 'NFT Mint'
+        
+      })
+    }
+    try {
+      const mintedNFT = await mintWarrantyNFT({
+        onSuccess : handleMintSuccess,
+        onError : handleMintError
+      })
+
+    }catch(err) {}
+
+    
+  }
+  const handleGoToNFT = ()=>{
+    if (nftURI) {
+      router.push(`https://ipfs.io/${nftURI.replace("ipfs://","ipfs/")}`)
+    }else {
+      dispatchNotification({
+        type : 'error',
+        message : 'NFT Not Found, Please Refresh',
+        title : 'NFT URI',
+        position :'topR'
+      })
+    }
+  }
   return (
     <AccountLayout>
       <div className="font-default 2xl:px-5">
@@ -110,6 +296,25 @@ const Order = ({order,user}) => {
             </div>
           </div>
         </div>
+
+        <div className="mt-5 p-2">
+        <div className="font-semibold text-lg">Claim Warranty</div>
+          {order.orderStatus==='delivered'?<div>
+            {order.isNftMinted?<div>
+              <div className="text-flipkartBlue">NFT has already been minted! {order.NFTUri}</div>
+              <Button disabled={nftLoading} variant="outlined" onClick={handleGoToNFT}>{nftLoading?'Loading...':'Go to NFT'}</Button>
+            </div>:!warrantyStatus?<Button sx={{marginTop : '2rem'}} onClick={handleCheckWarrantyStatus} variant="outlined">Check Warranty Status</Button>
+            :<div>
+              <div className="text-green-600">Warranty has been issued Please claim here.</div>
+              <Button onClick={handleClaimWarranty} variant="outlined" color="success">Claim Warranty</Button>
+            </div>}
+
+          </div>:<div>Order has not been delivered yet..</div>}
+        </div>
+
+
+
+
         <div className="mt-5 p-2">
           <div className="text-lg font-semibold">Delivery Address</div>
           <div className="mt-2">

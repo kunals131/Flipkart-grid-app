@@ -7,6 +7,10 @@ import moment from 'moment'
 import Image from "next/image";
 import { updateOrderStatus } from "../../store/order/actions";
 import { useDispatch } from "react-redux";
+import {useNotification} from 'web3uikit';
+import {useWeb3Contract} from 'react-moralis'
+import WarrantyABI from '../../constants/WarrantyNFTABI.json';
+
 const OrderItem = ({details}) => {
   
   return (
@@ -27,11 +31,62 @@ const OrderItem = ({details}) => {
 
 const OrderDrawer = ({ isOpen, handleClose,data }) => {
   const dispatch = useDispatch();
+  const notificationDispatch = useNotification();
   const [status,setStatus] = useState(data.orderStatus)
   const handleChange = (e)=>{
+    if (status==='delivered') {
+      notificationDispatch({
+        type : 'error',
+        message : `Cannot update the product once its delivered`,
+        title : 'Status Update',
+        position : 'topR'
+      })
+    }
     setStatus(e.target.value);
-    dispatch(updateOrderStatus(data._id,e.target.value));
   }
+  const {runContractFunction : placeOrder} = useWeb3Contract({
+    abi: WarrantyABI,
+    contractAddress: data.seller.warrantyAddress,
+    functionName: "placeOrder",
+    params: {
+      orderId : data.orderId,
+      customerAddress : data.customerWallet
+    },
+  });
+
+  const handleSave = async(e)=>{
+
+    const handleSuccess = (e)=>{
+      console.log(e);
+      notificationDispatch({
+        type : 'success',
+        message : `Order ${data.orderId} has been updated to ${status}`,
+        title : 'Status Update',
+        position : 'topR'
+      })
+      dispatch(updateOrderStatus(data._id,status));
+    }
+    const handleError = (err)=>{
+      console.log(err);
+      notificationDispatch({
+        type : 'error',
+        message : `Something went wrong!`,
+        title : 'Status Update',
+        position : 'topR'
+      })
+    }
+
+    if (status==='delivered') {
+      const result = await placeOrder({
+        onSuccess : handleSuccess,
+        onError : handleError
+      });
+    }
+    else {
+      handleSuccess();
+    }
+  }
+ 
   return (
     <div>
       <Drawer open={isOpen} onClose={handleClose} anchor={"right"}>
@@ -46,13 +101,14 @@ const OrderDrawer = ({ isOpen, handleClose,data }) => {
             <div className="text-base">
               <span className="font-[500]">Date : </span> {moment(data.createdAt).date()}  {moment(data.createdAt).format('MMMM')} {moment(data.createdAt).year()}
             </div>
-            <div className="select">
+            <div className="select flex items-center">
               <select onChange={handleChange} defaultValue={data.orderStatus} value={status} className="border-b-[2px] rounded-md px-5 py-1 outline-none">
                 <option value="pending">Pending</option>
                 <option value="shipped">Shipped</option>
                 <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
               </select>
+              <div onClick={handleSave} className="bg-green flex items-center justify-center border-[1px] p-2 text-center">✅</div>
             </div>
           </div>
           <div className="mt-6 w-full">

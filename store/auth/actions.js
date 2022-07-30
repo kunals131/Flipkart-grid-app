@@ -1,4 +1,5 @@
 import { checkAuthAPI, loginUserAPI, logoutUserAPI, signUpUserAPI } from "../../APIs/auth"
+import { verifySellerAPI } from "../../APIs/order"
 import { actionTypes } from "./constants"
 
 export const setAuthLoading = (state)=>{
@@ -20,12 +21,19 @@ export const loginUser = (formData,router)=> async (dispatch,getState)=>{
         dispatch(setAuthLoading(true));
         const userData = await loginUserAPI(formData);
         console.log(userData);
-        router.push('/');
         setAuthDetails({user : userData.data.user, isLoggedin : true});
+        router.push('/');
     }catch(err) {
         console.log(err);
     } finally {
         dispatch(setAuthLoading(false));
+    }
+}
+
+export const updateAuthState = (data)=>{
+    return {
+        type : actionTypes.UPDATE_AUTH,
+        payload : data
     }
 }
 
@@ -64,5 +72,31 @@ export const checkAuth = (formData)=>async(dispatch,getState)=>{
     }catch(err) {
         dispatch(setAuthDetails({isLoggedin : false}));
     }finally {
+    }
+}
+
+export const setSellerVerification = (formData,notificationDispatch)=>async(dispatch,getState)=>{
+    try {
+        dispatch(setAuthLoading(true))
+        const result = await verifySellerAPI(formData);
+        dispatch(updateAuthState(result.data.updatedSeller));
+        notificationDispatch({
+            type: "success",
+            message: "Seller Verified Successfully!",
+            title: "Seller Verification",
+            position: "topR",
+
+        })
+    }catch(err) {
+        console.log(err);
+        notificationDispatch({
+            type: "error",
+            message: "Something went wrong!",
+            title: "Seller Verification",
+            position: "topR",
+
+        })
+    }finally {
+        dispatch(setAuthLoading(false))
     }
 }

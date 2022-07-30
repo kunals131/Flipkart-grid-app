@@ -7,6 +7,7 @@ import { fetchAllOrderAPI } from '../../../APIs/order';
 import moment from 'moment'
 import { useDispatch,useSelector } from 'react-redux';
 import { setAllOrders } from '../../../store/order/actions';
+import Image from 'next/image';
 export const getServerSideProps = async(ctx) => {
     const auth = verifyAuthentication(ctx.req);
     if (auth.state && auth.decodedData.user.role==='seller') {
@@ -29,7 +30,9 @@ const OrderItem = ({details})=>{
         <div onClick={()=>setIsOpen(true)} className='px-8 grid grid-cols-[2fr_1fr_1fr_1fr_1fr] hover:bg-gray-100 transition-all items-center py-5 border-b-[1px] border-gray-300'>
 
             <div className='flex items-center gap-3'>
-                <div className='w-[45px] h-[45px] bg-flipkartBlue rounded-md'></div>
+                <div className='w-[45px] h-[45px]  rounded-md relative'>
+                  <Image src={details.product.image} layout='fill' objectFit='contain'/>
+                </div>
                 <div className='text-sm'>
                     <div className='font-[600]'>{details.product.name}</div>
                     <div className='text-gray-400 mt-[3px]'>{details.customer.username}</div>

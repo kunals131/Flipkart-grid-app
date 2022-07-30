@@ -23,3 +23,14 @@ export const updateOrderStatusAPI = async(id,status,token)=>{
     return result;
 }
 
+export const verifySellerAPI = async(data,token)=>{
+    const serverInstance = createServerInstance(token);
+    const result = await serverInstance.post('/auth/verifySeller', data);
+    return result;
+}
+
+export const mintNFTAPI = async(id,tokenId,token)=>{
+    const serverInstance = createServerInstance(token);
+    const result = await serverInstance.post(`/order/mintNFT/${id}`, {tokenId});
+    return result;
+}

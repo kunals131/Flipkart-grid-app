@@ -27,7 +27,7 @@ module.exports = async({getNamedAccounts,deployments})=>{
     //create-Seller (Flipkart's job)
     const sellerContract = await ethers.getContract("Seller", deployer);
     console.log(`Seller contract created with address ${sellerContract.address}`)
-    const sellerTxt = await sellerContract.createSeller(deployer, "Ins", "INS", {gasLimit : "5000000"});
+    const sellerTxt = await sellerContract.createSeller("Ins", "INS", {gasLimit : "5000000"});
     
     // console.log(`Seller created with hash ${sellerTxt.hash}`);
     let contractAddress = '';
@@ -49,12 +49,12 @@ module.exports = async({getNamedAccounts,deployments})=>{
 
 
     //buy deployer
-    const buyTx = await sellerWarrantyContract.placeOrder('123', {gasLimit : "5000000"});
+    const buyTx = await sellerWarrantyContract.placeOrder(deployer,'123', {gasLimit : "5000000"});
     await buyTx.wait(1);
     console.log(`Customer bought with order Id ${123}`);
 
 
-    const mintTx = await sellerWarrantyContract.mintWarrantyNFT(deployer,'123',tokenUris[0],tokenUris[1],'300', {gasLimit : "5000000"});
+    const mintTx = await sellerWarrantyContract.mintWarrantyNFT('123',tokenUris[0],tokenUris[1],'300', {gasLimit : "5000000"});
     await new Promise((resolve,reject)=>{
         setTimeout(resolve, 600000) // 5 minute timeout time
         sellerWarrantyContract.once('NFTMinted', (e)=>{

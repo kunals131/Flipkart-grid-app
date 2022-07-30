@@ -26,3 +26,8 @@ export const logoutUserAPI = async()=>{
     return result;
 }
 
+export const setVerification = async(formData,token)=>{
+    const serverInstance = createServerInstance('');
+    const result = await serverInstance('/auth/verifySeller', formData);
+    return result;
+}
