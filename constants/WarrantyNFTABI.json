@@ -301,6 +301,11 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "customer",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "orderId",
         "type": "uint256"
@@ -321,7 +326,7 @@
         "type": "uint256"
       }
     ],
-    "name": "mintWarrantyNFT",
+    "name": "mintNftWithOrder",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -356,24 +361,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "customerAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "orderId",
-        "type": "uint256"
-      }
-    ],
-    "name": "placeOrder",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

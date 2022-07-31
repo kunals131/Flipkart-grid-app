@@ -49,12 +49,10 @@ module.exports = async({getNamedAccounts,deployments})=>{
 
 
     //buy deployer
-    const buyTx = await sellerWarrantyContract.placeOrder(deployer,'123', {gasLimit : "5000000"});
-    await buyTx.wait(1);
-    console.log(`Customer bought with order Id ${123}`);
 
 
-    const mintTx = await sellerWarrantyContract.mintWarrantyNFT('123',tokenUris[0],tokenUris[1],'300', {gasLimit : "5000000"});
+
+    const mintTx = await sellerWarrantyContract.mintNftWithOrder(deployer,'123',tokenUris[0],tokenUris[1],'300', {gasLimit : "5000000"});
     await new Promise((resolve,reject)=>{
         setTimeout(resolve, 600000) // 5 minute timeout time
         sellerWarrantyContract.once('NFTMinted', (e)=>{

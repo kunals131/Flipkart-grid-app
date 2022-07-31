@@ -133,17 +133,6 @@ const Order = ({order,user}) => {
   //   functionName: "getCustomerOrders",
   //   params: {}
   // })
-  const {runContractFunction : mintWarrantyNFT} = useWeb3Contract({
-    abi: WarrantyABI,
-    contractAddress: order.seller.warrantyAddress,
-    functionName: "mintWarrantyNFT",
-    params: {
-      orderId : order.orderId,
-      activeTokenURI : 'ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4',
-      expireTokenURI : 'ipfs://QmcAYTohjhLJqrPjtasn6EbGDiYGPck1MGcFb5iL9ppnpQ',
-      expiry : 100,
-    }
-  })
   const {runContractFunction : getTokenDetailsFromOrderId} = useWeb3Contract({
     abi: WarrantyABI,
     contractAddress: order.seller.warrantyAddress,
@@ -153,9 +142,7 @@ const Order = ({order,user}) => {
     }
   })
   
-  const handleCheckWarrantyStatus = async()=>{
-    setWarrantyStatus(true)
-  }
+ 
   
   // const handleCheckWarrantyStatus = async()=>{
   //   if (!isWeb3Enabled) return handleWeb3NotEnabled();
@@ -185,35 +172,27 @@ const Order = ({order,user}) => {
   const handleClaimWarranty = async()=>{
     if (!isWeb3Enabled) return handleWeb3NotEnabled();
     if (account !== order.customerWallet) return handleInCorrectAddress();
-    
-    const handleMintSuccess = async()=>{
-      const tokenId = await getTokenDetailsFromOrderId(order.orderId);
-      dispatchNotification({
-        type : 'success',
-        message : `NFT Minted on chain with tokenId : ${tokenId}`,
-        position : 'topR',
-        title : 'NFT Mint'
-      })
-      console.log(tokenId);
-      dispatch(mintNftOrder(order._id, tokenId.toString(),dispatchNotification));
-      
-    }
-    const handleMintError = ()=>{
-      dispatchNotification({
-        type : 'error',
-        message : `Something went wrong!`,
-        position : 'topR',
-        title : 'NFT Mint'
-        
-      })
-    }
-    try {
-      const mintedNFT = await mintWarrantyNFT({
-        onSuccess : handleMintSuccess,
-        onError : handleMintError
-      })
-
-    }catch(err) {}
+    const tokenId = await getTokenDetailsFromOrderId({
+      onSuccess : (id)=>{
+        dispatch(mintNftOrder(order._id,id.toString(),dispatchNotification));
+        dispatchNotification({
+          type :'success',
+          message : `NFT has been minted successfully with id ${id.toString()}`,
+          title : 'NFT Minted',
+          position : 'topR'
+        })
+      },
+      onError: (err)=>{
+        console.log(err);
+        dispatchNotification({
+          type :'error',
+          message : 'NFT has not been minted yet. Try again later.',
+          title : 'NFT Minted',
+          position : 'topR'
+        })
+      }
+    })
+  
 
     
   }
@@ -303,11 +282,7 @@ const Order = ({order,user}) => {
             {order.isNftMinted?<div>
               <div className="text-flipkartBlue">NFT has already been minted! {order.NFTUri}</div>
               <Button disabled={nftLoading} variant="outlined" onClick={handleGoToNFT}>{nftLoading?'Loading...':'Go to NFT'}</Button>
-            </div>:!warrantyStatus?<Button sx={{marginTop : '2rem'}} onClick={handleCheckWarrantyStatus} variant="outlined">Check Warranty Status</Button>
-            :<div>
-              <div className="text-green-600">Warranty has been issued Please claim here.</div>
-              <Button onClick={handleClaimWarranty} variant="outlined" color="success">Claim Warranty</Button>
-            </div>}
+            </div>:<div><Button variant="outlined" onClick={handleClaimWarranty}>Claim NFT</Button></div>}
 
           </div>:<div>Order has not been delivered yet..</div>}
 

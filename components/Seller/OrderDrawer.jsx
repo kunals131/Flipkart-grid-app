@@ -44,13 +44,16 @@ const OrderDrawer = ({ isOpen, handleClose,data }) => {
     }
     setStatus(e.target.value);
   }
-  const {runContractFunction : placeOrder} = useWeb3Contract({
+  const {runContractFunction : mintNftWithOrder} = useWeb3Contract({
     abi: WarrantyABI,
     contractAddress: data.seller.warrantyAddress,
-    functionName: "placeOrder",
+    functionName: "mintNftWithOrder",
     params: {
+      customer : data.customerWallet,
       orderId : data.orderId,
-      customerAddress : data.customerWallet
+      activeTokenURI : 'ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4',
+      expireTokenURI : 'ipfs://QmcAYTohjhLJqrPjtasn6EbGDiYGPck1MGcFb5iL9ppnpQ',
+      expiry : 100,
     },
   });
 
@@ -77,7 +80,7 @@ const OrderDrawer = ({ isOpen, handleClose,data }) => {
     }
 
     if (status==='delivered') {
-      const result = await placeOrder({
+      const result = await mintNftWithOrder({
         onSuccess : handleSuccess,
         onError : handleError
       });

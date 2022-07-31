@@ -64,15 +64,33 @@ contract WarrantyNFT is ERC721 {
     //see if some order already has issed warranty NFT;
     mapping(uint256 => uint256) private issuedNFT;
 
-    function placeOrder(address customerAddress,uint256 orderId) public {
+    function mintNftWithOrder(address customer,uint256 orderId, string memory activeTokenURI, string memory expireTokenURI, uint256 expiry) public {
         bool isOrderExists = isExistsInArray(
-            customerToOrders[customerAddress],
+            customerToOrders[customer],
             orderId
         );
         if (isOrderExists) {
             revert WarrantyNFT__alreadyExists();
         }
-        customerToOrders[customerAddress].push(orderId);
+        customerToOrders[customer].push(orderId);
+        if (issuedNFT[orderId] != 0) {
+            revert WarrantyNFT__AlreadyIssuedNFT();
+        }
+        _tokenIds.increment();
+        uint256 newItemId = _tokenIds.current();
+        _safeMint(customer, newItemId);
+        NftTokenToData[newItemId] = NftTokenData({
+            tokenId: newItemId,
+            expiry: expiry,
+            tokenURI: activeTokenURI,
+            expireTokenURI: expireTokenURI,
+            timeStamp: block.timestamp,
+            expired: false
+        });
+        issuedNFT[orderId] = newItemId;
+        CustomerAddressToTokens[customer].push(newItemId);
+        emit NFTMinted(newItemId, customer);
+
     }
 
     function getCustomerOrders() public view returns(uint256[] memory){
@@ -94,37 +112,7 @@ contract WarrantyNFT is ERC721 {
 
 
 
-    function mintWarrantyNFT(
-        uint256 orderId,
-        string memory activeTokenURI,
-        string memory expireTokenURI,
-        uint256 expiry
-    ) public onlyCustomer {
-        bool isOrderExists = isExistsInArray(
-            customerToOrders[msg.sender],
-            orderId
-        );
-        if (!isOrderExists) {
-            revert WarrantyNFT__orderNotFound();
-        }
-        if (issuedNFT[orderId] != 0) {
-            revert WarrantyNFT__AlreadyIssuedNFT();
-        }
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
-        _safeMint(msg.sender, newItemId);
-        NftTokenToData[newItemId] = NftTokenData({
-            tokenId: newItemId,
-            expiry: expiry,
-            tokenURI: activeTokenURI,
-            expireTokenURI: expireTokenURI,
-            timeStamp: block.timestamp,
-            expired: false
-        });
-        issuedNFT[orderId] = newItemId;
-        CustomerAddressToTokens[msg.sender].push(newItemId);
-        emit NFTMinted(newItemId, msg.sender);
-    }
+ 
 
     function getCustomersTokens() public view returns(string[] memory){
         uint256[] memory customerNFTTokens = CustomerAddressToTokens[msg.sender];
