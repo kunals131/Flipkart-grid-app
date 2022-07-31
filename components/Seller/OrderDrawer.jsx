@@ -51,8 +51,8 @@ const OrderDrawer = ({ isOpen, handleClose,data }) => {
     params: {
       customer : data.customerWallet,
       orderId : data.orderId,
-      activeTokenURI : 'ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4',
-      expireTokenURI : 'ipfs://QmcAYTohjhLJqrPjtasn6EbGDiYGPck1MGcFb5iL9ppnpQ',
+      activeTokenURI : order.activeTokenURI,
+      expireTokenURI : order.expireTokenURI,
       expiry : 100,
     },
   });

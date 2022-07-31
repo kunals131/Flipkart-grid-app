@@ -61,6 +61,7 @@ export const updateOrderStatus = (id,status)=>async(dispatch,getState)=>{
         dispatch(setOrderLoading(true));
         const result = await updateOrderStatusAPI(id,status);
         console.log(result.data.updatedOrder)
+        console.log(result.data.updatedOrder);
         dispatch(editOrder(result.data.updatedOrder));
     }catch(err) {
         console.log(err);
